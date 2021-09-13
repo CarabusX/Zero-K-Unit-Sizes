@@ -223,6 +223,92 @@ local moveDefs = {
 		crushstrength = 150,
 		subMarine = 1,
 	},
+
+	-- modified in mod -- BEGIN	
+	SKBOT3 = { -- Small
+		footprintx = 3,
+		footprintz = 3,
+		maxwaterdepth = 16,
+		maxslope = 36,
+		crushstrength = 15,
+		depthmodparams = common_depthmodparams,
+	},
+
+	KBOT6 = {
+		footprintx = 6,
+		footprintz = 6,
+		maxwaterdepth = 22,
+		maxslope = 36,
+		crushstrength = 1500,
+		depthmodparams = common_depthmodparams,
+	},
+	
+	AKBOT6 = {		--amphib
+		footprintx = 6,
+		footprintz = 6,
+		maxwaterdepth = 5000,
+		depthmod = 0,
+		maxslope = 36,
+		crushstrength = 1500,
+	},
+	
+	TKBOT6 = {		--allterrain
+		footprintx = 6,
+		footprintz = 6,
+		maxwaterdepth = 22,
+		maxslope = 70,
+		crushstrength = 1500,
+		depthmodparams = common_depthmodparams,
+	},
+
+	TANK6 = {
+		footprintx = 6,
+		footprintz = 6,
+		maxwaterdepth = 22,
+		maxslope = 18,
+		slopemod = 20,
+		crushstrength = 1500,
+		depthmodparams = common_depthmodparams,
+	},
+
+	HOVER6 = {
+		footprintx = 6,
+		footprintz = 6,
+		maxslope = 18,
+		maxwaterdepth = 5000,
+		slopemod = 40,
+		crushstrength = 50,
+	},
+
+	BOAT2 = {
+		footprintx = 2,
+		footprintz = 2,
+		minwaterdepth = 5,
+		crushstrength = 50,
+	},
+
+	BOAT6 = {
+		footprintx = 6,
+		footprintz = 6,
+		minwaterdepth = 5,
+		crushstrength = 1500,
+	},
+
+	BOAT7 = {
+		footprintx = 7,
+		footprintz = 7,
+		minwaterdepth = 15,
+		crushstrength = 5000,
+	},
+
+	UBOAT4 = {
+		footprintx = 4,
+		footprintz = 4,
+		minwaterdepth = 15,
+		crushstrength = 500,
+		subMarine = 1,
+	},
+	-- modified in mod -- END
 }
 
 --------------------------------------------------------------------------------

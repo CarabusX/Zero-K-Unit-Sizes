@@ -4,6 +4,8 @@
 
 local unitSizesConfig = VFS.Include("gamedata/Configs/unitsizes_config.lua", nil, VFS.GAME)
 
+local moveDefs = VFS.Include("gamedata/movedefs.lua", nil, VFS.GAME)
+
 VFS.Include("LuaRules/Utilities/tablefunctions.lua")
 local CopyTable = Spring.Utilities.CopyTable
 
@@ -65,6 +67,7 @@ local factoriesByName = {}
 local factoriesUnitsByName = {}
 local platesByName = {}
 local otherUnitsByName = {}
+local moveDefsByName = {}
 
 for _, factoryUnitName in ipairs (factories) do
     local factoryDef = UnitDefs[factoryUnitName]
@@ -108,6 +111,11 @@ for unitName, _ in pairs (factoriesUnitsByName) do
     end
 end
 
+-- Move defs
+for _, moveDef in ipairs (moveDefs) do
+    moveDefsByName[ moveDef.name ] = true
+end
+
 --------------------------------------------------------------------------------
 
 --Spring.Utilities.TableEcho(UnitDefs, "UnitDefs")
@@ -124,13 +132,19 @@ local function applyMultAndRound(def, tag, mult)
     end
 end
 
-local function applyMultToFootprint(def, tag, mult, config)
+local function applyMultToFootprint(ud, def, tag, mult, config)
     if (def[tag]) then
-        local oldValue = tonumber(def[tag])
-        if (config.footprintConversions and config.footprintConversions[oldValue]) then
-            def[tag] = config.footprintConversions[oldValue]
+        local sourceUnitName = ud.customparams.sourceunit
+
+        if (config.footprintOverrides and config.footprintOverrides[ sourceUnitName ]) then
+            def[tag] = config.footprintOverrides[ sourceUnitName ]
         else
-            def[tag] = round(oldValue * mult)
+            local oldValue = tonumber(def[tag])
+            if (config.footprintConversions and config.footprintConversions[oldValue]) then
+                def[tag] = config.footprintConversions[oldValue]
+            else
+                def[tag] = round(oldValue * mult)
+            end
         end
     end
 end
@@ -161,6 +175,43 @@ local function applyUnitDefCostMult (ud, costMult)
     applyMultAndRound(ud, "buildcostmetal", costMult)
     applyMultAndRound(ud.customparams, "grey_goo_cost", costMult)
     applyMult(ud, "power", costMult)
+end
+
+local function scaleUnitDefMovementClass(ud, config)
+    if (ud.movementclass) then
+        local sourceUnitName = ud.customparams.sourceunit
+        local convertedMoveClass
+
+        if (config.moveClassOverrides and config.moveClassOverrides[ sourceUnitName ]) then
+            convertedMoveClass = config.moveClassOverrides[ sourceUnitName ]
+        else
+            local moveClassName, moveClassSize = string.match(ud.movementclass, "(%a+)(%d+)")
+            local convertedSize
+
+            if (config.footprintOverrides and config.footprintOverrides[ sourceUnitName ]) then
+                convertedSize = config.footprintOverrides[ sourceUnitName ]
+            else
+                moveClassSize = tonumber(moveClassSize)
+                if (config.footprintConversions and config.footprintConversions[moveClassSize]) then
+                    convertedSize = config.footprintConversions[moveClassSize]
+                end
+            end
+
+            if (convertedSize) then
+                convertedMoveClass = moveClassName .. convertedSize
+            end
+        end
+
+        if (convertedMoveClass) then
+            if (moveDefsByName[convertedMoveClass]) then
+                ud.movementclass = convertedMoveClass
+            else
+                Spring.Echo("Missing converted movementClass: " .. convertedMoveClass, ud.unitname)
+            end
+        else
+            Spring.Echo("No conversion found for movementClass: " .. ud.movementclass, ud.unitname)
+        end
+    end
 end
 
 local function scaleUnitDefYardMap (ud, multipliers, unscaledFootprintx, unscaledFootprintz)
@@ -212,8 +263,8 @@ local function applyUnitDefFeatureMults (ud, sizeMult, config)
             applyMultToVector(fd, "collisionvolumeoffsets", sizeMult)
             applyMultToVector(fd, "collisionvolumescales", sizeMult)
             applyMult(fd, "collisionspherescale", sizeMult)
-            applyMultToFootprint(fd, "footprintx", sizeMult, config)
-            applyMultToFootprint(fd, "footprintz", sizeMult, config)
+            applyMultToFootprint(ud, fd, "footprintx", sizeMult, config)
+            applyMultToFootprint(ud, fd, "footprintz", sizeMult, config)
         end
     end
 end
@@ -224,14 +275,16 @@ local function applyUnitDefSizeMult (ud, multipliers, config)
     ud.customparams.unitsizemult  = sizeMult
     ud.customparams.modelsizemult = sizeMult
 
+    scaleUnitDefMovementClass(ud, config)
+
     -- footprint-related
     local unscaledFootprintx = ud.footprintx
     local unscaledFootprintz = ud.footprintz
-    applyMultToFootprint(ud, "footprintx", sizeMult, config)
-    applyMultToFootprint(ud, "footprintz", sizeMult, config)
+    applyMultToFootprint(ud, ud, "footprintx", sizeMult, config)
+    applyMultToFootprint(ud, ud, "footprintz", sizeMult, config)
     scaleUnitDefYardMap(ud, multipliers, unscaledFootprintx, unscaledFootprintz)
 
-    applyMultToFootprint(ud, "transportsize", sizeMult, config)
+    applyMultToFootprint(ud, ud, "transportsize", sizeMult, config)
     applyMult(ud.customparams, "decloak_footprint", sizeMult)
     applyMultAndRound(ud, "buildinggrounddecalsizex", sizeMult)
     applyMultAndRound(ud, "buildinggrounddecalsizey", sizeMult)

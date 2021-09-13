@@ -4,8 +4,8 @@
 * Fix factory morph tooltip.
 * Sized drones
 * Sized mines
+* Sized movedefs
 Unit buildpics for S/M/L units
-Sized movedefs
 Sized wrecks and debris
 Sized unit explosions
 Sized CEGs

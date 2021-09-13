@@ -66,6 +66,17 @@ local unitSizesConfig = {
             [2] = 2,
             [3] = 2,
             [4] = 3,
+            [5] = 4, -- only used for BOAT5 movementClass
+        },
+
+        footprintOverrides = {
+            ["subraider"] = 3,
+            ["subtacmissile"] = 3,
+        },
+
+        moveClassOverrides = {
+            ["subraider"] = "UBOAT3",
+            ["subtacmissile"] = "UBOAT3",
         },
 
         -- Units for which small variant should be not created
@@ -134,6 +145,7 @@ local unitSizesConfig = {
             [2] = 3,
             [3] = 4,
             [4] = 6,
+            [5] = 7, -- only used for BOAT5 movementClass
         },
     },
     factory_medium = {
@@ -159,6 +171,10 @@ local unitSizesConfig = {
 
             yardMapScale = 3, -- 1.5 * 2
             yardMapToHighResolution = true,
+        },
+
+        footprintConversions = {
+            [4] = 6, -- only used for striderhub unit movementClass
         },
     },
     plate_medium = {
