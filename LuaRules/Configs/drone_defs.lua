@@ -144,6 +144,50 @@ local unitRulesCarrierDefs = {
 	}
 }
 
+-- modified in mod -- BEGIN
+local unitSizesConfig = VFS.Include("gamedata/Configs/unitsizes_config.lua", nil, VFS.GAME)
+
+local function applyDroneOffsetsMult (offsets, sizeMult)
+	offsets[1] = offsets[1] * sizeMult
+	offsets[2] = offsets[2] * sizeMult
+	offsets[3] = offsets[3] * sizeMult
+	offsets.colvolMidX = offsets.colvolMidX * sizeMult
+	offsets.colvolMidY = offsets.colvolMidY * sizeMult
+	offsets.colvolMidZ = offsets.colvolMidZ * sizeMult
+	offsets.aimX = offsets.aimX * sizeMult
+	offsets.aimY = offsets.aimY * sizeMult
+	offsets.aimZ = offsets.aimZ * sizeMult
+end
+
+local function applyCarrierDefSizeConfig (unitName, config)
+	local sourceCarrierData = carrierDefNames[unitName]
+	local carrierData = Spring.Utilities.CopyTable(sourceCarrierData, true)
+
+	for i = 1, #carrierData do
+		local droneData = carrierData[i]
+		local droneUd = UnitDefs[ droneData.drone ]
+		local sizedDroneUd = UnitDefNames[ droneUd.name .. config.unitNamePostfix ]
+
+		if (sizedDroneUd) then
+			droneData.drone = sizedDroneUd.id
+			applyDroneOffsetsMult(droneData.offsets, config.multipliers.size)
+		end
+
+		droneData.range = droneData.range * config.multipliers.range
+		droneData.maxChaseRange = droneData.maxChaseRange * config.multipliers.range
+	end
+	
+	carrierDefNames[ unitName .. config.unitNamePostfix ] = carrierData
+end
+
+local function CreateSizedCarrierDefs(unitName)
+	applyCarrierDefSizeConfig (unitName, unitSizesConfig.small)
+	applyCarrierDefSizeConfig (unitName, unitSizesConfig.large)
+end
+
+CreateSizedCarrierDefs("shipcarrier")
+-- modified in mod -- END
+
 --[[
 for name, ud in pairs(UnitDefNames) do
 	if ud.customParams.sheath_preset then
@@ -174,6 +218,22 @@ local thingsWhichAreDrones = {
 	[UnitDefNames.droneheavyslow.id] = true,
 	[UnitDefNames.dronefighter.id] = true
 }
+
+-- modified in mod -- BEGIN
+local function AddSizedThingsWhichAreDrones(droneUnitName)
+	local smallDroneUd = UnitDefNames[ droneUnitName .. unitSizesConfig.small.unitNamePostfix ]
+	local largeDroneUd = UnitDefNames[ droneUnitName .. unitSizesConfig.large.unitNamePostfix ]
+
+	if (smallDroneUd) then
+		thingsWhichAreDrones[ smallDroneUd.id ] = true
+	end
+	if (largeDroneUd) then
+		thingsWhichAreDrones[ largeDroneUd.id ] = true
+	end
+end
+
+AddSizedThingsWhichAreDrones("dronecarry")
+-- modified in mod -- END
 
 local function ProcessCarrierDef(carrierData)
 	local ud = UnitDefs[carrierData.drone]

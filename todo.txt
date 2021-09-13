@@ -2,8 +2,8 @@
 * Fix footprint for uneven footprint factories.
 * Minimum unit cost
 * Fix factory morph tooltip.
+* Sized drones
 Unit buildpics for S/M/L units
-Sized drones
 Sized mines
 Sized movedefs
 Sized wrecks and debris

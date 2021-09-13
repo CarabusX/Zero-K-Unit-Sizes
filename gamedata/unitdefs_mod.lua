@@ -47,6 +47,11 @@ local otherBuilders = {
     [[athena]],
 }
 
+local otherUnits = {
+    -- drones
+    [[dronecarry]],
+}
+
 --------------------------------------------------------------------------------
 
 local factoriesByName = {}
@@ -70,6 +75,11 @@ for _, plateUnitName in ipairs (plates) do
 end
 
 -- Other units
+for _, unitName in ipairs (otherUnits) do
+    otherUnitsByName[unitName] = true
+end
+
+-- include units morphable from factory units
 for unitName, _ in pairs (factoriesUnitsByName) do
     local ud = UnitDefs[unitName]
     local morphUnitName = ud.customparams and ud.customparams.morphto
@@ -453,7 +463,7 @@ CreateNewUnitDefs(function (ud, newUnitDefs)
 
         local isNotExcluded = (not unitSizesConfig.small.excludedUnits[ ud.unitname ])
         local isAboveMinCost = (ud.buildcostmetal >= unitSizesConfig.small.limits.minUnitCost)
-        local canBeSmall = isNotExcluded and isAboveMinCost
+        local canBeSmall = isNotExcluded and (isAboveMinCost or isOtherUnit)
 
         if (canBeSmall) then
             local smallUd = CopyTable(ud, true)
