@@ -211,7 +211,7 @@ local factoryUnitPosDef = {
 		jumpbomb          = unitTypes.SPECIAL,
 	},
 	factorytank = {
-		tankcon           = unitTypes. CONSTRUCTOR,
+		tankcon           = unitTypes.CONSTRUCTOR,
 		tankraid          = unitTypes.WEIRD_RAIDER,
 		tankheavyraid     = unitTypes.RAIDER,
 		tankriot          = unitTypes.RIOT,
@@ -256,6 +256,39 @@ local factoryUnitPosDef = {
 		gunshiptrans      = unitTypes.SPECIAL,
 		gunshipheavytrans = unitTypes.UTILITY,
 	},
+
+	striderhub = {
+		athena            = {order = 1, row = 1, col = 1},
+		striderantiheavy  = {order = 2, row = 1, col = 2},
+		striderscorpion   = {order = 3, row = 1, col = 3},
+		striderdante      = {order = 4, row = 1, col = 4},
+		striderarty       = {order = 5, row = 1, col = 5},
+		striderfunnelweb  = {order = 6, row = 1, col = 6},
+		striderbantha     = {order = 7, row = 2, col = 1},
+		striderdetriment  = {order = 8, row = 2, col = 2},
+		shipheavyarty     = {order = 9, row = 2, col = 3},
+		shipcarrier       = {order = 10, row = 2, col = 4},
+		subtacmissile     = {order = 11, row = 2, col = 5},
+	},
+	athena = {
+		cloakcon          = {order = 1, row = 1, col = 1},
+		spiderscout       = {order = 2, row = 1, col = 2},
+		shieldraid        = {order = 3, row = 1, col = 3},
+		hoverassault      = {order = 4, row = 1, col = 4},
+		cloakheavyraid    = {order = 5, row = 1, col = 5},
+		jumpskirm         = {order = 6, row = 1, col = 6},
+		spiderskirm       = {order = 7, row = 2, col = 1},
+		tankheavyraid     = {order = 8, row = 2, col = 2},
+		cloakassault      = {order = 9, row = 2, col = 3},
+		cloaksnipe        = {order = 10, row = 2, col = 4},
+		vehheavyarty      = {order = 11, row = 2, col = 5},
+		spiderantiheavy   = {order = 12, row = 2, col = 6},
+		cloakaa           = {order = 13, row = 3, col = 1},
+		shieldshield      = {order = 14, row = 3, col = 2},
+		cloakjammer       = {order = 15, row = 3, col = 3},
+		amphtele          = {order = 16, row = 3, col = 4},
+		striderantiheavy  = {order = 17, row = 3, col = 5},
+	},
 }
 
 -- Factory plates copy their parents.
@@ -270,6 +303,30 @@ factoryUnitPosDef.platejump    = Spring.Utilities.CopyTable(factoryUnitPosDef.fa
 factoryUnitPosDef.platetank    = Spring.Utilities.CopyTable(factoryUnitPosDef.factorytank)
 factoryUnitPosDef.plateamph    = Spring.Utilities.CopyTable(factoryUnitPosDef.factoryamph)
 factoryUnitPosDef.plateship    = Spring.Utilities.CopyTable(factoryUnitPosDef.factoryship)
+
+local largeFactoryUnitPosDef = {}
+for factoryUnitName, unitPosDef in pairs(factoryUnitPosDef) do
+	local smallUnitPosDef = {}
+	local largeUnitPosDef = {}
+	for unitName, value in pairs(unitPosDef) do
+		smallUnitPosDef[ unitName .. "_small" ] = Spring.Utilities.CopyTable(value)
+		largeUnitPosDef[ unitName .. "_large" ] = Spring.Utilities.CopyTable(value)
+	end
+
+	for unitName, value in pairs(smallUnitPosDef) do
+		unitPosDef[ unitName ] = value
+	end
+
+	local unitPosDefCopy = Spring.Utilities.CopyTable(unitPosDef, true)
+	for unitName, value in pairs(largeUnitPosDef) do
+		unitPosDefCopy[ unitName ] = value
+	end
+
+	largeFactoryUnitPosDef[ factoryUnitName .. "_large" ] = unitPosDefCopy
+end
+for factoryUnitName, unitPosDef in pairs(largeFactoryUnitPosDef) do
+	factoryUnitPosDef[ factoryUnitName ] = unitPosDef
+end
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -291,6 +348,14 @@ local factory_commands = {
 	factoryship       = {order = 11, row = 2, col = 5},
 	striderhub        = {order = 12, row = 2, col = 6},
 }
+
+local large_factory_commands = {}
+for unitName, value in pairs(factory_commands) do
+	large_factory_commands[ unitName .. "_large" ] = Spring.Utilities.CopyTable(value)
+end
+for unitName, value in pairs(large_factory_commands) do
+	factory_commands[ unitName ] = value
+end
 
 local econ_commands = {
 	staticmex         = {order = 1, row = 1, col = 1},

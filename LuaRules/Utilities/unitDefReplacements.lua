@@ -222,6 +222,18 @@ local function GetCustomTooltip (unitID, ud)
 	or GetPlateTooltip(unitID, ud)
 end
 
+-- modified in mod -- BEGIN
+local unitSizesConfig = VFS.Include("gamedata/Configs/unitsizes_config.lua")
+
+local function GetUnitSizePostfix(ud)
+	if (ud.customParams.unitsize) then
+		return unitSizesConfig[ ud.customParams.unitsize ].humanNamePostfix
+	else
+		return ""		
+	end
+end
+-- modified in mod -- END
+
 function Spring.Utilities.GetHumanName(ud, unitID)
 	if not ud then
 		return ""
@@ -239,8 +251,11 @@ function Spring.Utilities.GetHumanName(ud, unitID)
 		end
 	end
 
+	-- modified in mod -- BEGIN
 	local name_override = ud.customParams.statsname or ud.name
-	return WG.Translate ("units", name_override .. ".name") or ud.humanName
+	local translatedName = WG.Translate ("units", name_override .. ".name")
+	return translatedName and (translatedName .. GetUnitSizePostfix(ud)) or ud.humanName
+	-- modified in mod -- END
 end
 
 function Spring.Utilities.GetDescription(ud, unitID)

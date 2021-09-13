@@ -24,7 +24,7 @@ local function AddBuildQueue(name)
 	end
 end
 
-AddBuildQueue("striderhub")
+--AddBuildQueue("striderhub") -- modified in mod
 AddBuildQueue("staticmissilesilo")
 
 --------------------------------------------------------------------------------

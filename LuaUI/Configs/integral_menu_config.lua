@@ -476,11 +476,12 @@ local commandPanels = {
 		buttonLayoutOverride = specialButtonLayoutOverride,
 	},
 	{
-		humanName = "Factory",
+		humanName = "Fac (M)",
 		name = "factory",
 		inclusionFunction = function(cmdID)
 			local position = buildCmdFactory[cmdID]
-			return position and true or false, position
+			local isMedium = (UnitDefs[-cmdID].customParams.unitsize == "factory_medium")
+			return position and isMedium or false, position
 		end,
 		isBuild = true,
 		isStructure = true,
@@ -490,10 +491,64 @@ local commandPanels = {
 		buttonLayoutConfig = buttonLayoutConfig.build,
 	},
 	{
-		humanName = "Units",
+		humanName = "Fac (L)",
+		name = "factory_large",
+		inclusionFunction = function(cmdID)
+			local position = buildCmdFactory[cmdID]
+			local isLarge = (UnitDefs[-cmdID].customParams.unitsize == "factory_large")
+			return position and isLarge or false, position
+		end,
+		isBuild = true,
+		isStructure = true,
+		gridHotkeys = true,
+		returnOnClick = "orders",
+		--optionName = "tab_factory",
+		buttonLayoutConfig = buttonLayoutConfig.build,
+	},
+	{
+		humanName = "Units (Small)",
+		name = "units_mobile_small",
+		inclusionFunction = function(cmdID, factoryUnitDefID)
+			local athenaUnitDefID = UnitDefNames["athena"].id
+			local isSmall = (UnitDefs[-cmdID].customParams.unitsize == "small")
+
+			if (factoryUnitDefID or (not buildCmdUnits[athenaUnitDefID]) or (not isSmall)) then
+				return false
+			end
+			local buildOptions = UnitDefs[athenaUnitDefID].buildOptions
+			for i = 1, #buildOptions do
+				if buildOptions[i] == -cmdID then
+					local position = buildCmdUnits[athenaUnitDefID][cmdID]
+					return position and true or false, position
+				end
+			end
+			return false
+		end,
+		isBuild = true,
+		gridHotkeys = true,
+		returnOnClick = "orders",
+		--optionName = "tab_units",
+		buttonLayoutConfig = buttonLayoutConfig.build,
+	},
+	{
+		humanName = "Units (Medium)",
 		name = "units_mobile",
 		inclusionFunction = function(cmdID, factoryUnitDefID)
-			return not factoryUnitDefID -- Only called if previous funcs don't
+			local athenaUnitDefID = UnitDefNames["athena"].id
+			local isSmall = (UnitDefs[-cmdID].customParams.unitsize == "small")
+			local isLarge = (UnitDefs[-cmdID].customParams.unitsize == "large")
+
+			if (factoryUnitDefID or (not buildCmdUnits[athenaUnitDefID]) or isSmall or isLarge) then
+				return false
+			end
+			local buildOptions = UnitDefs[athenaUnitDefID].buildOptions
+			for i = 1, #buildOptions do
+				if buildOptions[i] == -cmdID then
+					local position = buildCmdUnits[athenaUnitDefID][cmdID]
+					return position and true or false, position
+				end
+			end
+			return false
 		end,
 		isBuild = true,
 		gridHotkeys = true,
@@ -502,10 +557,86 @@ local commandPanels = {
 		buttonLayoutConfig = buttonLayoutConfig.build,
 	},
 	{
-		humanName = "Units",
+		humanName = "Units (Large)",
+		name = "units_mobile_large",
+		inclusionFunction = function(cmdID, factoryUnitDefID)
+			local largeAthenaUnitDefID = UnitDefNames["athena_large"].id
+			local isLarge = (UnitDefs[-cmdID].customParams.unitsize == "large")
+
+			if (factoryUnitDefID or (not buildCmdUnits[largeAthenaUnitDefID]) or (not isLarge)) then
+				return false
+			end
+			local buildOptions = UnitDefs[largeAthenaUnitDefID].buildOptions
+			for i = 1, #buildOptions do
+				if buildOptions[i] == -cmdID then
+					local position = buildCmdUnits[largeAthenaUnitDefID][cmdID]
+					return position and true or false, position
+				end
+			end
+			return false
+		end,
+		isBuild = true,
+		gridHotkeys = true,
+		returnOnClick = "orders",
+		--optionName = "tab_units",
+		buttonLayoutConfig = buttonLayoutConfig.build,
+	},
+	{
+		humanName = "Units (Small)",
+		name = "units_factory_small",
+		inclusionFunction = function(cmdID, factoryUnitDefID)
+			local isSmall = (UnitDefs[-cmdID].customParams.unitsize == "small")
+			if not (factoryUnitDefID and buildCmdUnits[factoryUnitDefID] and isSmall) then
+				return false
+			end
+			local buildOptions = UnitDefs[factoryUnitDefID].buildOptions
+			for i = 1, #buildOptions do
+				if buildOptions[i] == -cmdID then
+					local position = buildCmdUnits[factoryUnitDefID][cmdID]
+					return position and true or false, position
+				end
+			end
+			return false
+		end,
+		loiterable = true,
+		factoryQueue = true,
+		isBuild = true,
+		hotkeyReplacement = "Orders",
+		gridHotkeys = true,
+		disableableKeys = true,
+		buttonLayoutConfig = buttonLayoutConfig.buildunit,
+	},
+	{
+		humanName = "Units (Medium)",
 		name = "units_factory",
 		inclusionFunction = function(cmdID, factoryUnitDefID)
-			if not (factoryUnitDefID and buildCmdUnits[factoryUnitDefID]) then
+			local isMedium = (UnitDefs[-cmdID].customParams.unitsize == "medium")
+			if not (factoryUnitDefID and buildCmdUnits[factoryUnitDefID] and isMedium) then
+				return false
+			end
+			local buildOptions = UnitDefs[factoryUnitDefID].buildOptions
+			for i = 1, #buildOptions do
+				if buildOptions[i] == -cmdID then
+					local position = buildCmdUnits[factoryUnitDefID][cmdID]
+					return position and true or false, position
+				end
+			end
+			return false
+		end,
+		loiterable = true,
+		factoryQueue = true,
+		isBuild = true,
+		hotkeyReplacement = "Orders",
+		gridHotkeys = true,
+		disableableKeys = true,
+		buttonLayoutConfig = buttonLayoutConfig.buildunit,
+	},
+	{
+		humanName = "Units (Large)",
+		name = "units_factory_large",
+		inclusionFunction = function(cmdID, factoryUnitDefID)
+			local isLarge = (UnitDefs[-cmdID].customParams.unitsize == "large")
+			if not (factoryUnitDefID and buildCmdUnits[factoryUnitDefID] and isLarge) then
 				return false
 			end
 			local buildOptions = UnitDefs[factoryUnitDefID].buildOptions
@@ -583,6 +714,9 @@ local factoryPlates = {
 for i = 1, #factoryPlates do
 	local plateDefID = UnitDefNames[factoryPlates[i]].id
 	widgetSpaceHidden[-plateDefID] = true
+
+	local largePlateDefID = UnitDefNames[factoryPlates[i] .. "_large"].id
+	widgetSpaceHidden[-largePlateDefID] = true
 end
 
 --------------------------------------------------------------------------------
