@@ -376,6 +376,12 @@ local function applyUnitDefMultipliers (ud, multipliers, config)
     applyUnitDefWeaponMults(ud, multipliers)
 end
 
+local function setDefaultsForMissingTags (ud)
+    if (not ud.script) then
+        ud.script = ud.unitname .. ".cob"
+    end
+end
+
 local function applyFactoryDefSizeConfig (ud, config)
     ud.customparams.unitsize = config.unitSizeValue
     ud.unitname = ud.unitname .. config.unitNamePostfix
@@ -441,6 +447,7 @@ CreateNewUnitDefs(function (ud, newUnitDefs)
             ud.customparams = {}
         end
 
+        setDefaultsForMissingTags(ud)
         ud.customparams.sourceunit = ud.unitname
         ud.customparams.statsname = ud.customparams.statsname or ud.unitname  -- for translations
 
@@ -473,6 +480,7 @@ local function CreateFactoriesUnitDefs (factoriesByName, mediumConfig, largeConf
                 ud.customparams = {}
             end
 
+            setDefaultsForMissingTags(ud)
             ud.customparams.sourceunit = ud.unitname
             ud.customparams.statsname = ud.customparams.statsname or ud.unitname  -- for translations
 
