@@ -50,6 +50,13 @@ local otherBuilders = {
 local otherUnits = {
     -- drones
     [[dronecarry]],
+
+    -- mines
+    -- [[wolverine_mine]], -- discovered automatically
+
+    -- morphable units
+    -- [[staticjammer]], -- discovered automatically
+    -- [[staticshield]],
 }
 
 --------------------------------------------------------------------------------
@@ -79,13 +86,25 @@ for _, unitName in ipairs (otherUnits) do
     otherUnitsByName[unitName] = true
 end
 
--- include units morphable from factory units
 for unitName, _ in pairs (factoriesUnitsByName) do
     local ud = UnitDefs[unitName]
+
+    -- include units morphable from factory units
     local morphUnitName = ud.customparams and ud.customparams.morphto
 
     if (morphUnitName and not factoriesUnitsByName[morphUnitName]) then
         otherUnitsByName[morphUnitName] = true
+    end
+
+    -- include mines
+    if (ud.weapondefs) then
+        for _, wd in pairs(ud.weapondefs) do            
+            local mineUnitName = wd.customparams and wd.customparams.spawns_name
+
+            if (mineUnitName) then
+                otherUnitsByName[mineUnitName] = true
+            end
+        end
     end
 end
 
@@ -303,7 +322,7 @@ local function applyUnitDefSpecialAbilityMults (ud, multipliers)
     applyMult(ud.customparams, "jump_height", multipliers.specialAbilityRange)
 end
 
-local function applyUnitDefWeaponMults (ud, multipliers)
+local function applyUnitDefWeaponMults (ud, multipliers, config)
     if (ud.weapondefs) then
         for _, wd in pairs(ud.weapondefs) do
             if not wd.customparams then
@@ -355,6 +374,10 @@ local function applyUnitDefWeaponMults (ud, multipliers)
 
             applyMult(wd, "metalpershot", multipliers.weaponCostMult)
             applyMult(wd, "energypershot", multipliers.weaponCostMult)
+
+            if (wd.customparams.spawns_name) then
+                wd.customparams.spawns_name = wd.customparams.spawns_name .. config.unitNamePostfix
+            end
         end
     end
 
@@ -383,7 +406,7 @@ local function applyUnitDefMultipliers (ud, multipliers, config)
     applyUnitDefResourceMults (ud, multipliers)
     applyUnitDefSensorMults (ud, multipliers)
     applyUnitDefSpecialAbilityMults (ud, multipliers)
-    applyUnitDefWeaponMults(ud, multipliers)
+    applyUnitDefWeaponMults(ud, multipliers, config)
 end
 
 local function setDefaultsForMissingTags (ud)

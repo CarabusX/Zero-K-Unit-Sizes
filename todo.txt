@@ -3,8 +3,8 @@
 * Minimum unit cost
 * Fix factory morph tooltip.
 * Sized drones
+* Sized mines
 Unit buildpics for S/M/L units
-Sized mines
 Sized movedefs
 Sized wrecks and debris
 Sized unit explosions
