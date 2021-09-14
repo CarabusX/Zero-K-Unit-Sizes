@@ -62,7 +62,7 @@ local unitSizesConfig = {
         },
 
         footprintConversions = {
-            [1] = 1,
+            --[1] = 1,
             [2] = 2,
             [3] = 2,
             [4] = 3,
@@ -141,11 +141,23 @@ local unitSizesConfig = {
         },
 
         footprintConversions = {
-            [1] = 2,
+            --[1] = 2,
             [2] = 3,
             [3] = 4,
             [4] = 6,
             [5] = 7, -- only used for BOAT5 movementClass
+        },
+
+        footprintOverrides = {
+            -- Large variants of some small units are still small enough to fit in the 2x2 footprint
+            ["cloakbomb"]   = 2, -- Imp
+            ["cloakraid"]   = 2, -- Glaive
+            ["gunshipbomb"] = 2, -- Blastwing
+            ["gunshipemp"]  = 2, -- Gnat
+            ["jumpscout"]   = 2, -- Puppy
+            ["shieldbomb"]  = 2, -- Snitch
+            ["shieldraid"]  = 2, -- Bandit
+            ["spiderscout"] = 2, -- Flea
         },
     },
     factory_medium = {
