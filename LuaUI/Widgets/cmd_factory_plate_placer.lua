@@ -5,7 +5,7 @@ function widget:GetInfo()
 	return {
 		name      = "Factory Plate Placer",
 		desc      = "Replaces factory placement with plates of the appropriate type.",
-		author    = "GoogleFrog",
+		author    = "GoogleFrog, modified by Rafal[ZK]",
 		date      = "20 July 2019",
 		license   = "GNU GPL, v2 or later",
 		layer     = -1,
@@ -85,7 +85,9 @@ local oddX = {}
 local oddZ = {}
 local buildAction = {}
 local childOfFactory = {}
+local childOfFactory2 = {}
 local parentOfPlate = {}
+local parentOfPlate2 = {}
 local floatOnWater = {}
 
 for i = 1, #UnitDefs do
@@ -99,9 +101,15 @@ for i = 1, #UnitDefs do
 		
 		if cp.child_of_factory then
 			childOfFactory[i] = UnitDefNames[cp.child_of_factory].id
+			if cp.child_of_factory2 then
+				childOfFactory2[i] = UnitDefNames[cp.child_of_factory2].id
+			end
 		end
 		if cp.parent_of_plate then
 			parentOfPlate[i] = UnitDefNames[cp.parent_of_plate].id
+			if cp.parent_of_plate2 then
+				parentOfPlate2[i] = UnitDefNames[cp.parent_of_plate2].id
+			end
 		end
 	end
 end
@@ -113,6 +121,7 @@ local IterableMap = VFS.Include("LuaRules/Gadgets/Include/IterableMap.lua")
 local factories = IterableMap.New()
 
 local currentFactoryDefID
+local currentFactoryDefID2
 local currentPlateDefID
 local closestFactoryData
 local activeCmdOverride
@@ -124,10 +133,10 @@ local function DistSq(x1, z1, x2, z2)
 	return (x1 - x2)*(x1 - x2) + (z1 - z2)*(z1 - z2)
 end
 
-local function GetClosestFactory(x, z, unitDefID)
+local function GetClosestFactory(x, z, unitDefID, unitDefID2)
 	local nearID, nearDistSq, nearData
 	for unitID, data in IterableMap.Iterator(factories) do
-		if data.unitDefID == unitDefID then
+		if data.unitDefID == unitDefID or (unitDefID2 and data.unitDefID == unitDefID2) then
 			local dSq = DistSq(x, z, data.x, data.z)
 			if (not nearDistSq) or (dSq < nearDistSq) then
 				nearID = unitID
@@ -171,8 +180,9 @@ local function CheckTransformPlateIntoFactory(plateDefID)
 	end
 	
 	local factoryDefID = childOfFactory[plateDefID]
+	local factoryDefID2 = childOfFactory2[plateDefID]
 	mx, mz = SnapBuildToGrid(mx, mz, plateDefID) -- Make sure the plate is in range when it is placed
-	local unitID, distSq, factoryData = GetClosestFactory(mx, mz, factoryDefID)
+	local unitID, distSq, factoryData = GetClosestFactory(mx, mz, factoryDefID, factoryDefID2)
 	if not unitID then
 		return
 	end
@@ -191,8 +201,9 @@ local function CheckTransformFactoryIntoPlate(factoryDefID)
 	end
 	
 	local plateDefID = parentOfPlate[factoryDefID]
+	local factoryDefID2 = childOfFactory2[plateDefID]
 	mx, mz = SnapBuildToGrid(mx, mz, plateDefID) -- Make sure the plate is in range when it is placed
-	local unitID, distSq, factoryData = GetClosestFactory(mx, mz, factoryDefID)
+	local unitID, distSq, factoryData = GetClosestFactory(mx, mz, factoryDefID, factoryDefID2)
 	if not unitID then
 		return
 	end
@@ -223,6 +234,7 @@ function widget:Update()
 		if parentOfPlate[unitDefID] then
 			currentFactoryDefID = unitDefID
 			currentPlateDefID = parentOfPlate[unitDefID]
+			currentFactoryDefID2 = childOfFactory2[currentPlateDefID]
 			if not CheckTransformFactoryIntoPlate(unitDefID) then
 				closestFactoryData = false
 			end
@@ -230,6 +242,7 @@ function widget:Update()
 		end
 		if childOfFactory[unitDefID] then
 			currentFactoryDefID = childOfFactory[unitDefID]
+			currentFactoryDefID2 = childOfFactory2[unitDefID]
 			currentPlateDefID = unitDefID
 			if not CheckTransformPlateIntoFactory(unitDefID) then
 				closestFactoryData = false
@@ -240,6 +253,7 @@ function widget:Update()
 	
 	if currentFactoryDefID then
 		currentFactoryDefID = nil
+		currentFactoryDefID2 = nil
 		currentPlateDefID = nil
 		closestFactoryData = nil
 	end
@@ -372,7 +386,7 @@ function widget:DrawInMiniMap(minimapX, minimapY)
 	
 	local drawn = false
 	for unitID, data in IterableMap.Iterator(factories) do
-		if data.unitDefID == currentFactoryDefID then
+		if data.unitDefID == currentFactoryDefID or (currentFactoryDefID2 and data.unitDefID == currentFactoryDefID2) then
 			drawn = true
 			local drawDef = GetDrawDef(mx, mz, data)
 			
@@ -407,7 +421,7 @@ function widget:DrawWorld()
 	local drawn = false
 	local drawInRange = false
 	for unitID, data in IterableMap.Iterator(factories) do
-		if data.unitDefID == currentFactoryDefID then
+		if data.unitDefID == currentFactoryDefID or (currentFactoryDefID2 and data.unitDefID == currentFactoryDefID2) then
 			drawn = true
 			local drawDef, inRange = GetDrawDef(mx, mz, data)
 			drawInRange = drawInRange or inRange

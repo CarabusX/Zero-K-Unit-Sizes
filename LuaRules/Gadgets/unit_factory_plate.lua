@@ -10,7 +10,7 @@ function gadget:GetInfo()
 	return {
 		name      = "Factory Plate",
 		desc      = "Handles factory plate disable/enable.",
-		author    = "GoogleFrog",
+		author    = "GoogleFrog, modified by Rafal[ZK]",
 		date      = "22 August 2020",
 		license   = "GNU GPL, v2 or later",
 		layer     = 0,
@@ -36,16 +36,24 @@ local ALLY_ACCESS = {allied = true}
 local FACTORY_RANGE_SQ = VFS.Include("gamedata/unitdefs_pre.lua", nil, VFS.GAME).FACTORY_PLATE_RANGE^2
 
 local childOfFactory = {}
+local childOfFactory2 = {}
 local parentOfPlate = {}
+local parentOfPlate2 = {}
 
 for i = 1, #UnitDefs do
 	local ud = UnitDefs[i]
 	local cp = ud.customParams
 	if cp.child_of_factory then
 		childOfFactory[i] = UnitDefNames[cp.child_of_factory].id
+		if cp.child_of_factory2 then
+			childOfFactory2[i] = UnitDefNames[cp.child_of_factory2].id
+		end
 	end
 	if cp.parent_of_plate then
 		parentOfPlate[i] = UnitDefNames[cp.parent_of_plate].id
+		if cp.parent_of_plate2 then
+			parentOfPlate2[i] = UnitDefNames[cp.parent_of_plate2].id
+		end
 	end
 end
 
@@ -62,8 +70,12 @@ local function DistSq(x1, z1, x2, z2)
 	return (x1 - x2)*(x1 - x2) + (z1 - z2)*(z1 - z2)
 end
 
+local function HasSameTech(plate, factory)
+	return (plate.tech == factory.tech) or (plate.tech2 and plate.tech2 == factory.tech2)
+end
+
 local function IsFactoryEligible(plate, factory)
-	if (not factory.enabled) or plate.allyTeamID ~= factory.allyTeamID or plate.tech ~= factory.tech then
+	if (not factory.enabled) or plate.allyTeamID ~= factory.allyTeamID or not HasSameTech(plate, factory) then
 		return false
 	end
 	return DistSq(plate.x, plate.z, factory.x, factory.z) <= FACTORY_RANGE_SQ
@@ -190,6 +202,7 @@ function gadget:UnitCreated(unitID, unitDefID, teamID)
 			x = x,
 			z = z,
 			tech = unitDefID,
+			tech2 = parentOfPlate2[unitDefID] and unitDefID,
 			allyTeamID = Spring.GetUnitAllyTeam(unitID),
 			enabled = not inbuild,
 		})
@@ -207,6 +220,7 @@ function gadget:UnitCreated(unitID, unitDefID, teamID)
 			x = x,
 			z = z,
 			tech = childOfFactory[unitDefID],
+			tech2 = childOfFactory2[unitDefID],
 			allyTeamID = Spring.GetUnitAllyTeam(unitID),
 			parent = false,
 			enabled = false,

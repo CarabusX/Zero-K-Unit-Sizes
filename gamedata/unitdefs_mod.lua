@@ -476,6 +476,7 @@ local function applyFactoryDefSizeConfig (ud, config)
     ud.buildcostmetal = config.constants.buildcostmetal
 
     if (ud.customparams.parent_of_plate) then
+        ud.customparams.parent_of_plate2 = ud.customparams.parent_of_plate
         ud.customparams.parent_of_plate = ud.customparams.parent_of_plate .. config.unitNamePostfix
     end
     if (ud.customparams.child_of_factory) then
@@ -581,6 +582,10 @@ local function CreateFactoriesUnitDefs (factoriesByName, mediumConfig, largeConf
             largeUd.buildoptions = processBuildOptions(largeUd.buildoptions, { "small", "medium", "large" })
 
             newUnitDefs[ largeUd.unitname ] = largeUd
+
+            if (ud.customparams.child_of_factory) then
+                ud.customparams.child_of_factory2 = largeUd.customparams.child_of_factory
+            end
 
             ud.customparams.morphto = largeUd.unitname
             if (largeConfig.constants.morphTime) then

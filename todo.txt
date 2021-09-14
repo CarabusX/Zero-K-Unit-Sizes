@@ -6,6 +6,7 @@
 * Sized mines
 * Sized movedefs
 * Fix sized units display during morph.
+* Medium plate available for Medium and Large factory
 Unit buildpics for S/M/L units
 Sized wrecks and debris
 Sized unit explosions
@@ -13,7 +14,6 @@ Sized CEGs
 Fix abilities for sized units (Gadgets/Configs).
 Fix sized factories display for building placement.
 Fix script issues for sized units.
-Medium plate available for Medium and Large factory
 Multi-row Chili Integral Menu tabs
 Sized Defences and Specials
 Custom Unit Fabricator
