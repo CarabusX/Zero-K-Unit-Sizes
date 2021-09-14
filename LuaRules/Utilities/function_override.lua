@@ -176,3 +176,41 @@ if Script.IsEngineMinVersion(104, 0, 1166) then
 		return r1, r2, r3, r4, r5, r6, r8, r7
 	end
 end
+
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+-- modified in mod -- BEGIN
+
+if (gl) then
+-- Unsynced
+-----------------------------------------------------------------------------------
+
+local glPushMatrix = gl.PushMatrix
+local glPopMatrix  = gl.PopMatrix
+local glScale      = gl.Scale
+
+-----------------------------------------------------------------------------------
+
+local origGlUnitShape = gl.UnitShape
+
+gl.UnitShape = function (unitDefID, teamID, rawState, toScreen, opaque)
+	local ud = UnitDefs[unitDefID]
+	local scale = ud.customParams.modelsizemult
+
+	if (scale and scale ~= 1.0) then
+		glPushMatrix()
+		glScale(scale, scale, scale)
+		origGlUnitShape(unitDefID, teamID, rawState, toScreen, opaque)
+		glPopMatrix()
+	else
+		origGlUnitShape(unitDefID, teamID, rawState, toScreen, opaque) 
+	end
+end
+
+-----------------------------------------------------------------------------------
+-- Unsynced
+end
+
+-- modified in mod -- END
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
