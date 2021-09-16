@@ -191,11 +191,18 @@ local glScale      = gl.Scale
 
 -----------------------------------------------------------------------------------
 
+local unitDefModelScales = {}
+
 local origGlUnitShape = gl.UnitShape
 
 gl.UnitShape = function (unitDefID, teamID, rawState, toScreen, opaque)
-	local ud = UnitDefs[unitDefID]
-	local scale = ud.customParams.modelsizemult
+	local scale = unitDefModelScales[unitDefID]
+
+	if (scale == nil) then
+		local ud = UnitDefs[unitDefID]
+		scale = ud.customParams.modelsizemult
+		unitDefModelScales[unitDefID] = scale
+	end
 
 	if (scale and scale ~= 1.0) then
 		glPushMatrix()
@@ -209,11 +216,18 @@ end
 
 -----------------------------------------------------------------------------------
 
+local featureDefModelScales = {}
+
 local origGlFeatureShape = gl.FeatureShape
 
 gl.FeatureShape = function (featureDefID, teamID, custom, drawScreen, opaque)
-	local fd = FeatureDefs[featureDefID]
-	local scale = fd.customParams.modelsizemult
+	local scale = featureDefModelScales[featureDefID]
+
+	if (scale == nil) then
+		local fd = FeatureDefs[featureDefID]
+		scale = fd.customParams.modelsizemult
+		featureDefModelScales[featureDefID] = scale
+	end
 
 	if (scale and scale ~= 1.0) then
 		glPushMatrix()
