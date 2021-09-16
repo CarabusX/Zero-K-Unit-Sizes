@@ -395,12 +395,12 @@ local defense_commands = {
 
 local special_commands = {
 	staticradar       = {order = 10, row = 1, col = 1},
-	staticjammer_small= {order = 11, row = 2, col = 2}, -- for Athena only
-	staticjammer      = {order = 12, row = 1, col = 2},
-	staticheavyradar  = {order = 14, row = 1, col = 3},
-	staticmissilesilo = {order = 15, row = 1, col = 4},
-	staticantinuke    = {order = 16, row = 1, col = 5},
-	staticjammer_large= {order = 13, row = 1, col = 6},
+	staticheavyradar  = {order = 11, row = 1, col = 2},
+	staticjammer_small= {order = 12, row = 2, col = 3}, -- for Athena only
+	staticjammer      = {order = 13, row = 1, col = 3},
+	staticjammer_large= {order = 14, row = 1, col = 4},
+	staticmissilesilo = {order = 15, row = 1, col = 5},
+	staticantinuke    = {order = 16, row = 1, col = 6},
 	staticarty        = {order = 2, row = 2, col = 1},
 	staticheavyarty   = {order = 3, row = 2, col = 2},
 	staticnuke        = {order = 4, row = 2, col = 3},
