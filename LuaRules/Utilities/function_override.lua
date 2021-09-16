@@ -208,6 +208,24 @@ gl.UnitShape = function (unitDefID, teamID, rawState, toScreen, opaque)
 end
 
 -----------------------------------------------------------------------------------
+
+local origGlFeatureShape = gl.FeatureShape
+
+gl.FeatureShape = function (featureDefID, teamID, custom, drawScreen, opaque)
+	local fd = FeatureDefs[featureDefID]
+	local scale = fd.customParams.modelsizemult
+
+	if (scale and scale ~= 1.0) then
+		glPushMatrix()
+		glScale(scale, scale, scale)
+		origGlFeatureShape(featureDefID, teamID, custom, drawScreen, opaque)
+		glPopMatrix()
+	else
+		origGlFeatureShape(featureDefID, teamID, custom, drawScreen, opaque)
+	end
+end
+
+-----------------------------------------------------------------------------------
 -- Unsynced
 end
 

@@ -269,6 +269,12 @@ end
 local function applyUnitDefFeatureMults (ud, sizeMult, config)
     if (ud.featuredefs) then
         for _, fd in pairs(ud.featuredefs) do
+            if not fd.customparams then
+                fd.customparams = {}
+            end
+
+            fd.customparams.modelsizemult = sizeMult
+
             applyMultToVector(fd, "collisionvolumeoffsets", sizeMult)
             applyMultToVector(fd, "collisionvolumescales", sizeMult)
             applyMult(fd, "collisionspherescale", sizeMult)
