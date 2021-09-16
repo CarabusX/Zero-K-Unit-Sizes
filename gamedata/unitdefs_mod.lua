@@ -49,6 +49,15 @@ local otherBuilders = {
     [[athena]],
 }
 
+local buildOptionReplacements = {
+    ["athena"] = {
+        {
+            buildOption = "staticjammer",
+            replacementSizes = { "small", "medium", "large" }
+        }
+    }
+}
+
 local otherUnits = {
     -- drones
     [[dronecarry]],
@@ -501,18 +510,53 @@ end
 local function processBuildOptions (buildoptions, includedSizesArray)
     local newBuildOptions = {}
 
+    for _, unitName in ipairs (buildoptions) do
+        if (not factoriesUnitsByName[unitName]) then -- retain order of static buildoptions
+            newBuildOptions[ #newBuildOptions + 1 ] = unitName
+        end
+    end
+
     for _, unitSize in ipairs(includedSizesArray) do
         local unitNamePostfix = unitSizesConfig[unitSize].unitNamePostfix
 
         for _, unitName in ipairs (buildoptions) do
-            local unitNameWithPostfix = unitName .. unitNamePostfix
-            if (UnitDefs[unitNameWithPostfix]) then
-                newBuildOptions[ #newBuildOptions + 1 ] = unitNameWithPostfix
+            if (factoriesUnitsByName[unitName]) then
+                local unitNameWithPostfix = unitName .. unitNamePostfix
+                if (UnitDefs[unitNameWithPostfix]) then
+                    newBuildOptions[ #newBuildOptions + 1 ] = unitNameWithPostfix
+                end
             end
         end
     end
 
     return newBuildOptions
+end
+
+local function addSizedBuildOptions (buildoptions, includedBuildOption, includedSizesArray)
+    local newBuildOptions = {}
+
+    for _, unitName in ipairs (buildoptions) do
+        if (unitName == includedBuildOption) then
+            for _, unitSize in ipairs(includedSizesArray) do
+                local unitNamePostfix = unitSizesConfig[unitSize].unitNamePostfix
+                newBuildOptions[ #newBuildOptions + 1 ] = unitName .. unitNamePostfix
+            end
+        else
+            newBuildOptions[ #newBuildOptions + 1 ] = unitName
+        end
+    end
+
+    return newBuildOptions
+end
+
+for _, ud in pairs (UnitDefs) do  -- Replace buildoptions
+    if (buildOptionReplacements[ ud.unitname ]) then
+        local replacementsArray = buildOptionReplacements[ ud.unitname ]
+
+        for _, replacementData in ipairs (replacementsArray) do
+            ud.buildoptions = addSizedBuildOptions(ud.buildoptions, replacementData.buildOption, replacementData.replacementSizes)
+        end
+    end
 end
 
 local function CreateNewUnitDefs (processUnitDefFunc)

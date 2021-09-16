@@ -388,15 +388,19 @@ local defense_commands = {
 	turrettorp        = {order = 14, row = 3, col = 2},
 	turretheavy       = {order = 16, row = 3, col = 3},
 	turretantiheavy   = {order = 17, row = 3, col = 4},
-	staticshield      = {order = 18, row = 3, col = 5},
+	staticshield_small= {order = 18, row = 2, col = 6},
+	staticshield      = {order = 19, row = 3, col = 5},
+	staticshield_large= {order = 20, row = 3, col = 6},
 }
 
 local special_commands = {
 	staticradar       = {order = 10, row = 1, col = 1},
+	staticjammer_small= {order = 11, row = 2, col = 2}, -- for Athena only
 	staticjammer      = {order = 12, row = 1, col = 2},
 	staticheavyradar  = {order = 14, row = 1, col = 3},
 	staticmissilesilo = {order = 15, row = 1, col = 4},
 	staticantinuke    = {order = 16, row = 1, col = 5},
+	staticjammer_large= {order = 13, row = 1, col = 6},
 	staticarty        = {order = 2, row = 2, col = 1},
 	staticheavyarty   = {order = 3, row = 2, col = 2},
 	staticnuke        = {order = 4, row = 2, col = 3},

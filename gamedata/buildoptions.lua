@@ -59,8 +59,11 @@ local buildOpts = {
 	-- Large variants -- END
 	[[staticradar]],
 	[[staticheavyradar]],
+	[[staticshield_small]], -- Small variant
 	[[staticshield]],
+	[[staticshield_large]], -- Large variant
 	[[staticjammer]],
+	[[staticjammer_large]], -- Large variant
 	[[turretmissile]],
 	[[turretlaser]],
 	[[turretimpulse]],
