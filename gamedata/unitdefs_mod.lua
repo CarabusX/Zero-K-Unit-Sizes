@@ -430,6 +430,13 @@ local function applyUnitDefWeaponMults (ud, multipliers, config)
             applyMult(wd.customparams, "gui_draw_range", multipliers.range)
             applyMult(wd, "flighttime", multipliers.range)
 
+            if (wd.model) then
+                wd.customparams.modelsizemult = multipliers.projectileSize
+            end
+            applyMult(wd, "size", multipliers.projectileSize)
+            applyMult(wd, "sizedecay", multipliers.projectileSize)
+            applyMult(wd, "sizegrowth", multipliers.projectileSize) -- not used in ZK
+            applyMult(wd, "collisionsize", multipliers.projectileSize) -- not used in ZK
             applyMult(wd, "laserflaresize", multipliers.projectileSize)
             applyMult(wd, "thickness", multipliers.projectileSize)
             applyMult(wd, "corethickness", multipliers.projectileSize)
