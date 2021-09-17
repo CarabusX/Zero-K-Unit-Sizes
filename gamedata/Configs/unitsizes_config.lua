@@ -38,6 +38,7 @@ local unitSizesConfig = {
         unitSizeValue = "small",
         unitNamePostfix = "_small",
         humanNamePostfix = " (Small)",
+        externalWeaponDefsConfigKey = "small",
 
         multipliers = {
             cost = 0.5,
@@ -112,11 +113,13 @@ local unitSizesConfig = {
         unitSizeValue = "medium",
         unitNamePostfix = "",
         humanNamePostfix = " (Medium)",
+        externalWeaponDefsConfigKey = "medium",
     },
     large = {
         unitSizeValue = "large",
         unitNamePostfix = "_large",
         humanNamePostfix = " (Large)",
+        externalWeaponDefsConfigKey = "large",
 
         multipliers = {
             cost = 2.5,
@@ -164,11 +167,13 @@ local unitSizesConfig = {
         unitSizeValue = "factory_medium",
         unitNamePostfix = "",
         humanNamePostfix = " (Medium)",
+        externalWeaponDefsConfigKey = "medium",
     },
     factory_large = {
         unitSizeValue = "factory_large",
         unitNamePostfix = "_large",
         humanNamePostfix = " (Large)",
+        externalWeaponDefsConfigKey = "large",
 
         constants = {
             buildcostmetal = LARGE_FACTORY_COST,
@@ -193,11 +198,13 @@ local unitSizesConfig = {
         unitSizeValue = "plate_medium",
         unitNamePostfix = "",
         humanNamePostfix = " (Medium)",
+        externalWeaponDefsConfigKey = "medium",
     },
     plate_large = {
         unitSizeValue = "plate_large",
         unitNamePostfix = "_large",
         humanNamePostfix = " (Large)",
+        externalWeaponDefsConfigKey = "large",
 
         constants = {
             buildcostmetal = LARGE_PLATE_COST,
@@ -214,6 +221,11 @@ local unitSizesConfig = {
         },
     },
 }
+
+for key, config in pairs(unitSizesConfig) do
+    config.weaponSizeValue   = config.unitSizeValue
+    config.weaponNamePostfix = config.unitNamePostfix
+end
 
 SetDefaults(unitSizesConfig.factory_large.multipliers, unitSizesConfig.large.multipliers)
 SetDefaults(unitSizesConfig.plate_large.multipliers  , unitSizesConfig.large.multipliers)

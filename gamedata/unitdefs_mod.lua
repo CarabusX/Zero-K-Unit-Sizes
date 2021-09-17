@@ -1,4 +1,4 @@
---Spring.Echo("UnitSizes unitdefs_mod.lua")
+Spring.Echo("Loading UnitDefs_mod")
 
 --VFS.Include('gamedata/unitdefs_analyzer.lua', nil, VFS.GAME)
 
@@ -8,6 +8,8 @@ local moveDefs = VFS.Include("gamedata/movedefs.lua", nil, VFS.GAME)
 
 VFS.Include("LuaRules/Utilities/tablefunctions.lua")
 local CopyTable = Spring.Utilities.CopyTable
+
+local lower = string.lower
 
 local round = math.round or function (x)
     return math.floor(x + 0.5)
@@ -81,6 +83,7 @@ local factoriesUnitsByName = {}
 local platesByName = {}
 local otherUnitsByName = {}
 local moveDefsByName = {}
+local externalWeaponDefVariants = {}
 
 for _, factoryUnitName in ipairs (factories) do
     local factoryDef = UnitDefs[factoryUnitName]
@@ -394,69 +397,96 @@ local function applyUnitDefSpecialAbilityMults (ud, multipliers)
     applyMult(ud.customparams, "jump_height", multipliers.specialAbilityRange)
 end
 
+local function applyWeaponDefMults (wd, multipliers, config)
+    if not wd.customparams then
+        wd.customparams = {}
+    end
+
+    wd.customparams.weaponsize = config.weaponSizeValue
+
+    for dmgKey, dmgValue in pairs(wd.damage) do
+        wd.damage[dmgKey] = dmgValue * multipliers.damage
+    end
+
+    applyMult(wd.customparams, "extra_damage", multipliers.damage)
+    applyMult(wd.customparams, "area_damage_dps", multipliers.damage)
+    applyMult(wd.customparams, "timeslow_damage", multipliers.damage)
+    applyMult(wd.customparams, "damage_vs_feature", multipliers.damage)
+    applyMult(wd.customparams, "damage_vs_shield", multipliers.damage)
+    applyMult(wd.customparams, "stats_damage", multipliers.damage)
+    applyMult(wd.customparams, "impulse", multipliers.damage)
+    applyMult(wd.customparams, "shield_drain", multipliers.damage)
+    applyMult(wd, "camerashake", multipliers.damage)
+    --applyMult(wd.customparams, "falldamageimmunity", multipliers.damage)
+
+    applyMult(wd, "areaofeffect", multipliers.aoe)
+    applyMult(wd, "craterareaofeffect", multipliers.aoe)
+    applyMult(wd.customparams, "area_damage_radius", multipliers.aoe)
+    applyMult(wd.customparams, "area_damage_plateau_radius", multipliers.aoe)
+    applyMult(wd.customparams, "area_damage_height_max", multipliers.aoe)
+    applyMult(wd.customparams, "area_damage_height_int", multipliers.aoe)
+    applyMult(wd.customparams, "area_damage_height_reduce", multipliers.aoe)
+    applyMult(wd.customparams, "gatherradius", multipliers.aoe)
+    applyMult(wd.customparams, "smoothradius", multipliers.aoe)
+    applyMult(wd.customparams, "detachmentradius", multipliers.aoe)
+    --applyMult(wd, "light_radius", multipliers.aoe)
+
+    applyMult(wd, "range", multipliers.range)
+    applyMult(wd, "dyndamagerange", multipliers.range)
+    applyMult(wd.customparams, "combatrange", multipliers.range)
+    applyMult(wd.customparams, "gui_draw_range", multipliers.range)
+    applyMult(wd, "flighttime", multipliers.range)
+
+    if (wd.model and not excludedProjectileModels[ wd.model ]) then
+        wd.customparams.modelsizemult = multipliers.projectileSize
+    end
+    applyMult(wd, "size", multipliers.projectileSize)
+    applyMult(wd, "sizedecay", multipliers.projectileSize)
+    applyMult(wd, "sizegrowth", multipliers.projectileSize) -- not used in ZK
+    applyMult(wd, "collisionsize", multipliers.projectileSize) -- not used in ZK
+    applyMult(wd, "laserflaresize", multipliers.projectileSize)
+    applyMult(wd, "thickness", multipliers.projectileSize)
+    applyMult(wd, "corethickness", multipliers.projectileSize)
+
+    applyMult(wd, "shieldpower", multipliers.shieldPower)
+    applyMult(wd, "shieldstartingpower", multipliers.shieldPower)
+    applyMult(wd, "shieldpowerregen", multipliers.shieldPower)
+    applyMult(wd, "shieldpowerregenenergy", multipliers.shieldPower)
+    applyMult(wd, "shieldradius", multipliers.shieldRange)
+
+    applyMult(wd, "metalpershot", multipliers.weaponCostMult)
+    applyMult(wd, "energypershot", multipliers.weaponCostMult)
+
+    if (wd.customparams.spawns_name) then
+        wd.customparams.spawns_name = wd.customparams.spawns_name .. config.unitNamePostfix
+    end
+end
+
+local function processUnitDefWeaponName (ud, def, tag, config)
+    if (def[tag]) then
+        local weaponName = lower(def[tag])
+
+        if not (ud.weapondefs and ud.weapondefs[weaponName]) then
+            local configKey = config.externalWeaponDefsConfigKey
+
+            externalWeaponDefVariants[configKey] = externalWeaponDefVariants[configKey] or {}
+            externalWeaponDefVariants[configKey][weaponName] = true
+
+            def[tag] = weaponName .. config.weaponNamePostfix
+        end
+    end  
+end
+
 local function applyUnitDefWeaponMults (ud, multipliers, config)
+    if (ud.weapons) then
+        for _, weaponData in pairs(ud.weapons) do
+            processUnitDefWeaponName(ud, weaponData, "def", config)
+        end
+    end
+
     if (ud.weapondefs) then
         for _, wd in pairs(ud.weapondefs) do
-            if not wd.customparams then
-                wd.customparams = {}
-            end
-
-            for dmgKey, dmgValue in pairs(wd.damage) do
-                wd.damage[dmgKey] = dmgValue * multipliers.damage
-            end
-
-            applyMult(wd.customparams, "extra_damage", multipliers.damage)
-            applyMult(wd.customparams, "area_damage_dps", multipliers.damage)
-            applyMult(wd.customparams, "timeslow_damage", multipliers.damage)
-            applyMult(wd.customparams, "damage_vs_feature", multipliers.damage)
-            applyMult(wd.customparams, "damage_vs_shield", multipliers.damage)
-            applyMult(wd.customparams, "stats_damage", multipliers.damage)
-            applyMult(wd.customparams, "impulse", multipliers.damage)
-            applyMult(wd.customparams, "shield_drain", multipliers.damage)
-            applyMult(wd, "camerashake", multipliers.damage)
-            --applyMult(wd.customparams, "falldamageimmunity", multipliers.damage)
-
-            applyMult(wd, "areaofeffect", multipliers.aoe)
-            applyMult(wd, "craterareaofeffect", multipliers.aoe)
-            applyMult(wd.customparams, "area_damage_radius", multipliers.aoe)
-            applyMult(wd.customparams, "area_damage_plateau_radius", multipliers.aoe)
-            applyMult(wd.customparams, "area_damage_height_max", multipliers.aoe)
-            applyMult(wd.customparams, "area_damage_height_int", multipliers.aoe)
-            applyMult(wd.customparams, "area_damage_height_reduce", multipliers.aoe)
-            applyMult(wd.customparams, "gatherradius", multipliers.aoe)
-            applyMult(wd.customparams, "smoothradius", multipliers.aoe)
-            applyMult(wd.customparams, "detachmentradius", multipliers.aoe)
-            --applyMult(wd, "light_radius", multipliers.aoe)
-
-            applyMult(wd, "range", multipliers.range)
-            applyMult(wd, "dyndamagerange", multipliers.range)
-            applyMult(wd.customparams, "combatrange", multipliers.range)
-            applyMult(wd.customparams, "gui_draw_range", multipliers.range)
-            applyMult(wd, "flighttime", multipliers.range)
-
-            if (wd.model and not excludedProjectileModels[ wd.model ]) then
-                wd.customparams.modelsizemult = multipliers.projectileSize
-            end
-            applyMult(wd, "size", multipliers.projectileSize)
-            applyMult(wd, "sizedecay", multipliers.projectileSize)
-            applyMult(wd, "sizegrowth", multipliers.projectileSize) -- not used in ZK
-            applyMult(wd, "collisionsize", multipliers.projectileSize) -- not used in ZK
-            applyMult(wd, "laserflaresize", multipliers.projectileSize)
-            applyMult(wd, "thickness", multipliers.projectileSize)
-            applyMult(wd, "corethickness", multipliers.projectileSize)
-
-            applyMult(wd, "shieldpower", multipliers.shieldPower)
-            applyMult(wd, "shieldstartingpower", multipliers.shieldPower)
-            applyMult(wd, "shieldpowerregen", multipliers.shieldPower)
-            applyMult(wd, "shieldpowerregenenergy", multipliers.shieldPower)
-            applyMult(wd, "shieldradius", multipliers.shieldRange)
-
-            applyMult(wd, "metalpershot", multipliers.weaponCostMult)
-            applyMult(wd, "energypershot", multipliers.weaponCostMult)
-
-            if (wd.customparams.spawns_name) then
-                wd.customparams.spawns_name = wd.customparams.spawns_name .. config.unitNamePostfix
-            end
+            applyWeaponDefMults(wd, multipliers, config)
         end
     end
 
@@ -470,11 +500,17 @@ local function applyUnitDefWeaponMults (ud, multipliers, config)
     applyMult(ud.customparams, "stockpilecost", multipliers.weaponCostMult)
 end
 
+local function processUnitDefExplosions (ud, config)
+    processUnitDefWeaponName(ud, ud, "explodeas", config)
+    processUnitDefWeaponName(ud, ud, "selfdestructas", config)
+end
+
 local function applyFactoryDefMultipliers (ud, multipliers, config)
     applyUnitDefSizeMult(ud, multipliers, config)
     applyUnitDefHealthMult (ud, multipliers.health)
     applyUnitDefResourceMults (ud, multipliers)
     applyUnitDefSensorMults (ud, multipliers)
+    processUnitDefExplosions(ud, config)
 end
 
 local function applyUnitDefMultipliers (ud, multipliers, config)
@@ -486,6 +522,7 @@ local function applyUnitDefMultipliers (ud, multipliers, config)
     applyUnitDefSensorMults (ud, multipliers)
     applyUnitDefSpecialAbilityMults (ud, multipliers)
     applyUnitDefWeaponMults(ud, multipliers, config)
+    processUnitDefExplosions(ud, config)
 end
 
 local function setDefaultsForMissingTags (ud)
@@ -681,3 +718,8 @@ for _, unitName in ipairs(otherBuilders) do
 end
 
 --Spring.Utilities.TableEcho(UnitDefs, "UnitDefs modified")
+
+GlobalShared = GlobalShared or {}
+
+GlobalShared.applyWeaponDefMults = applyWeaponDefMults
+GlobalShared.externalWeaponDefVariants = externalWeaponDefVariants
