@@ -70,6 +70,10 @@ local otherUnits = {
     -- [[staticshield]],
 }
 
+local excludedProjectileModels = {
+    ["emptyModel.s3o"] = true, -- used only on fake weapons
+}
+
 --------------------------------------------------------------------------------
 
 local factoriesByName = {}
@@ -430,7 +434,7 @@ local function applyUnitDefWeaponMults (ud, multipliers, config)
             applyMult(wd.customparams, "gui_draw_range", multipliers.range)
             applyMult(wd, "flighttime", multipliers.range)
 
-            if (wd.model) then
+            if (wd.model and not excludedProjectileModels[ wd.model ]) then
                 wd.customparams.modelsizemult = multipliers.projectileSize
             end
             applyMult(wd, "size", multipliers.projectileSize)
