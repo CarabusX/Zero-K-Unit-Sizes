@@ -229,12 +229,23 @@ end
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --
--- Set myGravity for Cannons because maps cannot be trusted. Standard is 120,
+-- Set myGravity for ballistic weapons because maps cannot be trusted. Standard is 120,
 -- gravity of 150 can cause high things (such as HLT) to be unhittable.
 
- for _, weaponDef in pairs(WeaponDefs) do
-	if weaponDef.weapontype == "Cannon" and not weaponDef.mygravity then
-		weaponDef.mygravity = 2/15 -- 120/(GAME_SPEED^2)
+local defaultMyGravity = 120 / (Game.gameSpeed^2)
+
+for _, weaponDef in pairs(WeaponDefs) do
+
+	--[[ There are other weapons that follow gravity,
+	     for example expired missiles and torpedoes
+	     who fall out of water, but these disobey the
+	     tag and always use map gravity anyway ]]
+	local supportsMyGravity =
+		(weaponDef.weapontype == "Cannon") or
+		(weaponDef.weapontype == "AircraftBomb")
+
+	if supportsMyGravity and (not weaponDef.mygravity) then -- setting myGravity = 0.0 will use map gravity anyway
+		weaponDef.mygravity = defaultMyGravity
 	end
 end
 --------------------------------------------------------------------------------
