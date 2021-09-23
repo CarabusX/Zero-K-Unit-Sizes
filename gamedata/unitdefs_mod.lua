@@ -15,6 +15,9 @@ local round = math.round or function (x)
     return math.floor(x + 0.5)
 end
 
+local defaultMapGravity = 120
+local defaultMyGravity  = defaultMapGravity / (Game.gameSpeed ^ 2)
+
 --------------------------------------------------------------------------------
 
 local factories = {
@@ -436,6 +439,19 @@ local function applyWeaponDefMults (wd, multipliers, config)
     applyMult(wd.customparams, "combatrange", multipliers.range)
     applyMult(wd.customparams, "gui_draw_range", multipliers.range)
     applyMult(wd, "flighttime", multipliers.range)
+
+    local isBallistic =
+        (wd.weapontype == "Cannon") -- other ballistic weapontypes don't support "myGravity" tag
+
+    if (isBallistic) then
+        local usesMapGravity = (not wd.mygravity) or (tonumber(wd.mygravity) == 0.0)
+
+        if usesMapGravity then
+            wd.mygravity = defaultMyGravity
+        end
+
+        applyMult(wd, "mygravity", 1.0 / multipliers.range) -- same trajectory shape at max range
+    end
 
     if (wd.model and not excludedProjectileModels[ wd.model ]) then
         wd.customparams.modelsizemult = multipliers.projectileSize
