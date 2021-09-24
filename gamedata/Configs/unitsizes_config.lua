@@ -223,8 +223,10 @@ local unitSizesConfig = {
 }
 
 for key, config in pairs(unitSizesConfig) do
-    config.weaponSizeValue   = config.unitSizeValue
-    config.weaponNamePostfix = config.unitNamePostfix
+    config.weaponSizeValue        = config.unitSizeValue
+    config.weaponNamePostfix      = config.unitNamePostfix
+    config.explosionNamePostfix   = config.unitNamePostfix
+    config.explosionDefsConfigKey = config.externalWeaponDefsConfigKey
 end
 
 SetDefaults(unitSizesConfig.factory_large.multipliers, unitSizesConfig.large.multipliers)

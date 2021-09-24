@@ -87,6 +87,7 @@ local platesByName = {}
 local otherUnitsByName = {}
 local moveDefsByName = {}
 local externalWeaponDefVariants = {}
+local explosionDefVariants = {}
 
 for _, factoryUnitName in ipairs (factories) do
     local factoryDef = UnitDefs[factoryUnitName]
@@ -400,6 +401,31 @@ local function applyUnitDefSpecialAbilityMults (ud, multipliers)
     applyMult(ud.customparams, "jump_height", multipliers.specialAbilityRange)
 end
 
+local explosionNamePrefix = [[custom:]]
+
+local function processExplosionName (def, tag, withPrefix, config)
+    if (def[tag]) then
+        local prefixedExplosionName = lower(def[tag])
+        local explosionName = prefixedExplosionName
+
+        if (withPrefix) then
+            if (prefixedExplosionName:sub(1, #explosionNamePrefix) == explosionNamePrefix) then
+                explosionName = prefixedExplosionName:sub(#explosionNamePrefix + 1)
+            else
+                Spring.Echo("Explosion name without prefix:", prefixedExplosionName)
+                return
+            end
+        end
+
+        local configKey = config.explosionDefsConfigKey
+
+        explosionDefVariants[configKey] = explosionDefVariants[configKey] or {}
+        explosionDefVariants[configKey][explosionName] = true
+
+        --def[tag] = prefixedExplosionName .. config.explosionNamePostfix
+    end  
+end
+
 local function applyWeaponDefMults (wd, multipliers, config)
     if not wd.customparams then
         wd.customparams = {}
@@ -476,6 +502,11 @@ local function applyWeaponDefMults (wd, multipliers, config)
     if (wd.customparams.spawns_name) then
         wd.customparams.spawns_name = wd.customparams.spawns_name .. config.unitNamePostfix
     end
+
+    processExplosionName(wd, "cegtag", false, config)
+    processExplosionName(wd, "explosiongenerator", true, config)
+    processExplosionName(wd.customparams, "muzzleeffectfire", true, config)
+    processExplosionName(wd.customparams, "misceffectfire", true, config)
 end
 
 local function processUnitDefWeaponName (ud, def, tag, config)
@@ -519,6 +550,14 @@ end
 local function processUnitDefExplosions (ud, config)
     processUnitDefWeaponName(ud, ud, "explodeas", config)
     processUnitDefWeaponName(ud, ud, "selfdestructas", config)
+
+    if (ud.sfxtypes and ud.sfxtypes.explosiongenerators) then
+        local explosionGenerators = ud.sfxtypes.explosiongenerators
+
+        for index = 1, #explosionGenerators do
+            processExplosionName(explosionGenerators, index, true, config)
+        end
+    end
 end
 
 local function applyFactoryDefMultipliers (ud, multipliers, config)
@@ -739,3 +778,5 @@ GlobalShared = GlobalShared or {}
 
 GlobalShared.applyWeaponDefMults = applyWeaponDefMults
 GlobalShared.externalWeaponDefVariants = externalWeaponDefVariants
+
+GlobalShared.explosionDefVariants = explosionDefVariants

@@ -5,8 +5,14 @@ local unitSizesConfig = VFS.Include("gamedata/Configs/unitsizes_config.lua", nil
 VFS.Include("LuaRules/Utilities/tablefunctions.lua")
 local CopyTable = Spring.Utilities.CopyTable
 
+VFS.Include("gamedata/utilities_mod.lua")
+local SetToSortedArray     = Spring.Utilities.SetToSortedArray
+local TableOrArrayToString = Spring.Utilities.TableOrArrayToString
+
 local applyWeaponDefMults       = GlobalShared.applyWeaponDefMults
 local externalWeaponDefVariants = GlobalShared.externalWeaponDefVariants
+
+local explosionDefVariants      = GlobalShared.explosionDefVariants
 
 --------------------------------------------------------------------------------
 
@@ -34,3 +40,18 @@ end
 CopyTable(newWeaponDefs, false, WeaponDefs)
 
 --Spring.Utilities.TableEcho(WeaponDefs, "WeaponDefs modified")
+
+--------------------------------------------------------------------------------
+
+local function OutputExplosionDefVariants()
+    local explosionDefVariantsAsLists = {}
+
+    for configKey, explosionNamesSet in pairs(explosionDefVariants) do
+        explosionDefVariantsAsLists[configKey] = SetToSortedArray(explosionNamesSet)
+    end
+
+    --Spring.Utilities.TableEcho(explosionDefVariantsAsLists, "explosionDefVariants")
+    Spring.Echo("\n" .. TableOrArrayToString("explosionDefVariants", explosionDefVariantsAsLists))
+end
+
+--OutputExplosionDefVariants()
