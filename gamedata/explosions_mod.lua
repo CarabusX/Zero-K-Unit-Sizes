@@ -12,6 +12,13 @@ local lower = string.lower
 
 --------------------------------------------------------------------------------
 
+local excludedExplosionGenerators = {
+    ["default"] = true, -- generators with no spawners
+    ["none"] = true,
+}
+
+--------------------------------------------------------------------------------
+
 local function ArrayToSet (array)
     local set = {}
     for _, value in ipairs (array) do
@@ -104,12 +111,14 @@ local function processExplosionName (def, tag, config)
         if (prefixedExplosionName:sub(1, #explosionNamePrefix) == explosionNamePrefix) then
             local explosionName = prefixedExplosionName:sub(#explosionNamePrefix + 1)
 
-            if (not explosionNamesSet[explosionName]) then
-                explosionNamesSet[explosionName] = true
-                explosionNamesList[ #explosionNamesList + 1 ] = explosionName
-            end
+            if (not excludedExplosionGenerators[ explosionName ]) then
+                if (not explosionNamesSet[explosionName]) then
+                    explosionNamesSet[explosionName] = true
+                    explosionNamesList[ #explosionNamesList + 1 ] = explosionName
+                end
 
-            def[tag] = prefixedExplosionName .. config.explosionNamePostfix
+                def[tag] = prefixedExplosionName .. config.explosionNamePostfix
+            end
         else
             Spring.Echo("Explosion name without prefix:", prefixedExplosionName)
         end

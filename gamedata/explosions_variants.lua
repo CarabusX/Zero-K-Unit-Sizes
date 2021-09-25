@@ -23,7 +23,6 @@ local explosionDefVariants = {
 		[[bubbles_small]],
 		[[cloakbomb_explosion]],
 		[[crashmuzzle]],
-		[[default]],
 		[[dguntrace]],
 		[[digdig]],
 		[[dirt]],
@@ -101,7 +100,6 @@ local explosionDefVariants = {
 		[[napalm_koda_small]],
 		[[napalm_phoenix]],
 		[[napalm_pyro]],
-		[[none]],
 		[[nuke_150]],
 		[[nuke_600]],
 		[[opticblast_charge]],
@@ -173,7 +171,7 @@ local explosionDefVariants = {
 		[[yellowdisarmtrail]],
 		[[zeusgroundflash]],
 		[[zeusmuzzle]],
-		-- 170
+		-- 168
 	},
 	large = {
 		[[165rlexplode]],
@@ -197,7 +195,6 @@ local explosionDefVariants = {
 		[[bubbles_small]],
 		[[cloakbomb_explosion]],
 		[[crashmuzzle]],
-		[[default]],
 		[[dguntrace]],
 		[[digdig]],
 		[[dirt]],
@@ -278,7 +275,6 @@ local explosionDefVariants = {
 		[[napalm_koda_small]],
 		[[napalm_phoenix]],
 		[[napalm_pyro]],
-		[[none]],
 		[[nuke_150]],
 		[[nuke_600]],
 		[[opticblast_charge]],
@@ -352,7 +348,7 @@ local explosionDefVariants = {
 		[[yellowdisarmtrail]],
 		[[zeusgroundflash]],
 		[[zeusmuzzle]],
-		-- 176
+		-- 174
 	},
 }
 

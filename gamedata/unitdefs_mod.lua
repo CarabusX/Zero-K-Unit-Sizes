@@ -79,6 +79,11 @@ local excludedProjectileModels = {
     ["emptyModel.s3o"] = true, -- used only on fake weapons
 }
 
+local excludedExplosionGenerators = {
+    ["default"] = true, -- generators with no spawners
+    ["none"] = true,
+}
+
 --------------------------------------------------------------------------------
 
 local factoriesByName = {}
@@ -417,12 +422,14 @@ local function processExplosionName (def, tag, withPrefix, config)
             end
         end
 
-        local configKey = config.explosionDefsConfigKey
+        if (not excludedExplosionGenerators[ explosionName ]) then
+            local configKey = config.explosionDefsConfigKey
 
-        explosionDefVariants[configKey] = explosionDefVariants[configKey] or {}
-        explosionDefVariants[configKey][explosionName] = true
+            explosionDefVariants[configKey] = explosionDefVariants[configKey] or {}
+            explosionDefVariants[configKey][explosionName] = true
 
-        def[tag] = prefixedExplosionName .. config.explosionNamePostfix
+            def[tag] = prefixedExplosionName .. config.explosionNamePostfix
+        end
     end  
 end
 
