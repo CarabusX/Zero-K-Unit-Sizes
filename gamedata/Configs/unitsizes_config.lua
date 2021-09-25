@@ -225,7 +225,7 @@ local unitSizesConfig = {
 for key, config in pairs(unitSizesConfig) do
     config.weaponSizeValue        = config.unitSizeValue
     config.weaponNamePostfix      = config.unitNamePostfix
-    config.explosionNamePostfix   = config.unitNamePostfix
+    config.explosionNamePostfix   = "_modded" .. config.unitNamePostfix  -- some existing explosions already have "_small" or "_large" postfix
     config.explosionDefsConfigKey = config.externalWeaponDefsConfigKey
 end
 

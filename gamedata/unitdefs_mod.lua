@@ -422,7 +422,7 @@ local function processExplosionName (def, tag, withPrefix, config)
         explosionDefVariants[configKey] = explosionDefVariants[configKey] or {}
         explosionDefVariants[configKey][explosionName] = true
 
-        --def[tag] = prefixedExplosionName .. config.explosionNamePostfix
+        def[tag] = prefixedExplosionName .. config.explosionNamePostfix
     end  
 end
 
