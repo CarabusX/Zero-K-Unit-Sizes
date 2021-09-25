@@ -124,9 +124,16 @@ for unitName, _ in pairs (factoriesUnitsByName) do
         otherUnitsByName[morphUnitName] = true
     end
 
+    -- include units spawned by grey goo
+    local greyGooUnitName = ud.customparams and ud.customparams.grey_goo_spawn
+
+    if (greyGooUnitName and not factoriesUnitsByName[greyGooUnitName]) then
+        otherUnitsByName[greyGooUnitName] = true
+    end
+
     -- include mines
     if (ud.weapondefs) then
-        for _, wd in pairs(ud.weapondefs) do            
+        for _, wd in pairs(ud.weapondefs) do
             local mineUnitName = wd.customparams and wd.customparams.spawns_name
 
             if (mineUnitName) then
@@ -618,6 +625,10 @@ local function applyUnitDefSizeConfig (ud, config)
 
     if (ud.customparams.morphto) then
         ud.customparams.morphto = ud.customparams.morphto .. config.unitNamePostfix
+    end
+
+    if (ud.customparams.grey_goo_spawn) then
+        ud.customparams.grey_goo_spawn = ud.customparams.grey_goo_spawn .. config.unitNamePostfix
     end
 
     applyUnitDefMultipliers(ud, config.multipliers, config)
