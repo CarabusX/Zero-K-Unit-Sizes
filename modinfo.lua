@@ -1,7 +1,7 @@
 return {
 	name = 'Zero-K with Unit Sizes',
 	description = 'Zero-K with multiple size variants of most units',
-	shortname = 'unitsizes',
+	shortname = 'ZK_Unit_Sizes',
 	version = 'v0.1.0',
 	mutator = '1',
 	game = 'Zero-K',

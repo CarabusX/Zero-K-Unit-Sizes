@@ -15,8 +15,12 @@
 * Fix range of slow ballistic weapons for large units.
 Unit buildpics for S/M/L units
 Fix abilities for sized units (Gadgets/Configs).
-Fix sized factories display for building placement.
 Make large factories not ploppable.
 Multi-row Chili Integral Menu tabs
+Make Integral Menu remember selected tab per factory/plate type.
+Scaled sounds of units and weapons
+Implement s3o model parsing and scaling tool.
+Fix sized factories display for building placement.
+Add sized models of projectiles instead of using DrawProjectile.
 Sized Defences and Specials
 Custom Unit Fabricator
