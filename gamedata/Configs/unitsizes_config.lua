@@ -141,6 +141,9 @@ local unitSizesConfig = {
             range = LARGE_UNIT_RANGE_MULT,
             weaponCostMult = LARGE_UNIT_POWER_MULT,
             projectileSize = LARGE_UNIT_SIZE_MULT,
+
+            yardMapScale = 1, -- Let the yardMap scaling code automatically add missing chars to fill footprint size.
+            yardMapToHighResolution = false,
         },
 
         footprintConversions = {

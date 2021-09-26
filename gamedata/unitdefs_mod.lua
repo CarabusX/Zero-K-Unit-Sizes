@@ -248,16 +248,19 @@ end
 
 local function scaleUnitDefYardMap (ud, multipliers, unscaledFootprintx, unscaledFootprintz)
     if (ud.yardmap) then
-        if (multipliers.yardMapScale and multipliers.yardMapScale ~= 1 and unscaledFootprintx) then
+        if (multipliers.yardMapScale and multipliers.yardMapScale ~= 1) or
+           (unscaledFootprintx ~= ud.footprintx) or
+           (unscaledFootprintz ~= ud.footprintz) then
             local yardmap = string.gsub(ud.yardmap, " ", "")
 
             local yardmapLength = #yardmap
             local lineLength = unscaledFootprintx
             local numLines = unscaledFootprintz
 
+            local yardMapScale = multipliers.yardMapScale or 1
             local highResolutionMult = (multipliers.yardMapToHighResolution and 2 or 1)
-            local centerCharsToAdd = (ud.footprintx * highResolutionMult) - (unscaledFootprintx * multipliers.yardMapScale)
-            local centerLinesToAdd = (ud.footprintz * highResolutionMult) - (unscaledFootprintz * multipliers.yardMapScale)
+            local centerCharsToAdd = (ud.footprintx * highResolutionMult) - (unscaledFootprintx * yardMapScale)
+            local centerLinesToAdd = (ud.footprintz * highResolutionMult) - (unscaledFootprintz * yardMapScale)
 
             local centerLine = math.floor((numLines - 1) / 2)
             local centerIndex = 1 + centerLine * lineLength
@@ -271,12 +274,12 @@ local function scaleUnitDefYardMap (ud, multipliers, unscaledFootprintx, unscale
 
                 for j = i, lineEnd do
                     local char = string.sub(yardmap, j, j)
-                    local numCharRepeats = (j == lineCenter) and (multipliers.yardMapScale + centerCharsToAdd) or multipliers.yardMapScale
+                    local numCharRepeats = (j == lineCenter) and (yardMapScale + centerCharsToAdd) or yardMapScale
                     local scaledChar = string.rep(char, numCharRepeats)
                     scaledLine = scaledLine .. scaledChar
                 end
 
-                local numLineRepeats = (i == centerIndex) and (multipliers.yardMapScale + centerLinesToAdd) or multipliers.yardMapScale
+                local numLineRepeats = (i == centerIndex) and (yardMapScale + centerLinesToAdd) or yardMapScale
                 local multipliedLine = string.rep(scaledLine .. " ", numLineRepeats)
                 scaledYardMap = scaledYardMap .. multipliedLine
             end
