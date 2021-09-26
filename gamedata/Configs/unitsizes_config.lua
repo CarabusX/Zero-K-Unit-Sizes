@@ -10,7 +10,7 @@ local LARGE_UNIT_POWER_MULT = 2.0
 local LARGE_UNIT_RANGE_MULT = 1.2
 
 local LARGE_PLATE_COST = 400
-local LARGE_FACTORY_COST = 2000
+local LARGE_FACTORY_COST = 1800
 
 --------------------------------------------------------------------------------
 
@@ -180,8 +180,8 @@ local unitSizesConfig = {
 
         constants = {
             buildcostmetal = LARGE_FACTORY_COST,
-            morphTime = 100,
-            --morphBuildPower = 15,
+            --morphTime = 110,
+            morphBuildPower = 10,
         },
 
         multipliers = {
@@ -217,7 +217,7 @@ local unitSizesConfig = {
         multipliers = {
             size = 1.5,
             health = 2.0,
-            buildPower = 1.5, -- 2.0
+            buildPower = 2.0,
 
             yardMapScale = 3, -- 1.5 * 2
             yardMapToHighResolution = true,
