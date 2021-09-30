@@ -12,6 +12,11 @@ local LARGE_UNIT_RANGE_MULT = 1.2
 local LARGE_PLATE_COST = 400
 local LARGE_FACTORY_COST = 1800
 
+local SMALL_TEXT_COLOR  = "\255\255\255\001"
+local MEDIUM_TEXT_COLOR = "\255\255\140\001"
+local LARGE_TEXT_COLOR  = "\255\255\025\089"
+local RESET_COLOR_CODE  = "\008"
+
 --------------------------------------------------------------------------------
 
 local function ArrayToSet (array)
@@ -37,8 +42,9 @@ local unitSizesConfig = {
     small = {
         mainConfigKey = "small",
         unitNamePostfix = "_small",
-        humanNamePostfix = " (Small)",
+        humanNamePostfix = "Small",
         buildPicPostfix = "_small",
+        textColor = SMALL_TEXT_COLOR,
 
         multipliers = {
             cost = 0.5,
@@ -112,14 +118,16 @@ local unitSizesConfig = {
     medium = {
         mainConfigKey = "medium",
         unitNamePostfix = "",
-        humanNamePostfix = " (Medium)",
+        humanNamePostfix = "Medium",
         buildPicPostfix = "_medium",
+        textColor = MEDIUM_TEXT_COLOR,
     },
     large = {
         mainConfigKey = "large",
         unitNamePostfix = "_large",
-        humanNamePostfix = " (Large)",
+        humanNamePostfix = "Large",
         buildPicPostfix = "_large",
+        textColor = LARGE_TEXT_COLOR,
 
         multipliers = {
             cost = 2.5,
@@ -169,14 +177,16 @@ local unitSizesConfig = {
     factory_medium = {
         mainConfigKey = "medium",
         unitNamePostfix = "",
-        humanNamePostfix = " (Medium)",
+        humanNamePostfix = "Medium",
         buildPicPostfix = "_medium",
+        textColor = MEDIUM_TEXT_COLOR,
     },
     factory_large = {
         mainConfigKey = "large",
         unitNamePostfix = "_large",
-        humanNamePostfix = " (Large)",
+        humanNamePostfix = "Large",
         buildPicPostfix = "_large",
+        textColor = LARGE_TEXT_COLOR,
 
         constants = {
             buildcostmetal = LARGE_FACTORY_COST,
@@ -200,14 +210,16 @@ local unitSizesConfig = {
     plate_medium = {
         mainConfigKey = "medium",
         unitNamePostfix = "",
-        humanNamePostfix = " (Medium)",
+        humanNamePostfix = "Medium",
         buildPicPostfix = "_medium",
+        textColor = MEDIUM_TEXT_COLOR,
     },
     plate_large = {
         mainConfigKey = "large",
         unitNamePostfix = "_large",
-        humanNamePostfix = " (Large)",
+        humanNamePostfix = "Large",
         buildPicPostfix = "_large",
+        textColor = LARGE_TEXT_COLOR,
 
         constants = {
             buildcostmetal = LARGE_PLATE_COST,
@@ -225,11 +237,16 @@ local unitSizesConfig = {
     },
 }
 
+local function ColorizeSizeText (text, colorCode)
+    return colorCode .. text .. RESET_COLOR_CODE
+end
+
 for configKey, config in pairs(unitSizesConfig) do
     config.configKey            = configKey
     config.buildPicConfigKey    = config.mainConfigKey
     config.weaponNamePostfix    = config.unitNamePostfix
     config.explosionNamePostfix = "_modded" .. config.unitNamePostfix  -- some existing explosions already have "_small" or "_large" postfix
+    config.humanNamePostfix     = " (" .. ColorizeSizeText(config.humanNamePostfix, config.textColor) .. ")"
 end
 
 SetDefaults(unitSizesConfig.factory_large.multipliers, unitSizesConfig.large.multipliers)
