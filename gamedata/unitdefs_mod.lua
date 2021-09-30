@@ -438,7 +438,7 @@ local function processExplosionName (def, tag, withPrefix, config)
         end
 
         if (not excludedExplosionGenerators[ explosionName ]) then
-            local configKey = config.explosionDefsConfigKey
+            local configKey = config.mainConfigKey
 
             explosionDefVariants[configKey] = explosionDefVariants[configKey] or {}
             explosionDefVariants[configKey][explosionName] = true
@@ -453,7 +453,7 @@ local function applyWeaponDefMults (wd, multipliers, config)
         wd.customparams = {}
     end
 
-    wd.customparams.weaponsize = config.weaponSizeValue
+    wd.customparams.weaponsize = config.mainConfigKey
 
     for dmgKey, dmgValue in pairs(wd.damage) do
         wd.damage[dmgKey] = dmgValue * multipliers.damage
@@ -536,7 +536,7 @@ local function processUnitDefWeaponName (ud, def, tag, config)
         local weaponName = lower(def[tag])
 
         if not (ud.weapondefs and ud.weapondefs[weaponName]) then
-            local configKey = config.externalWeaponDefsConfigKey
+            local configKey = config.mainConfigKey
 
             externalWeaponDefVariants[configKey] = externalWeaponDefVariants[configKey] or {}
             externalWeaponDefVariants[configKey][weaponName] = true
@@ -608,10 +608,14 @@ local function setDefaultsForMissingTags (ud)
     end
 end
 
-local function applyFactoryDefSizeConfig (ud, config)
-    ud.customparams.unitsize = config.unitSizeValue
-    ud.unitname = ud.unitname .. config.unitNamePostfix
+local function applyCommonSizeConfig (ud, config)
     ud.name = ud.name .. config.humanNamePostfix
+    ud.customparams.unitsize = config.configKey
+end
+
+local function applyFactoryDefSizeConfig (ud, config)
+    ud.unitname = ud.unitname .. config.unitNamePostfix
+    applyCommonSizeConfig (ud, config)
 
     ud.buildcostmetal = config.constants.buildcostmetal
 
@@ -627,9 +631,8 @@ local function applyFactoryDefSizeConfig (ud, config)
 end
 
 local function applyUnitDefSizeConfig (ud, config)
-    ud.customparams.unitsize = config.unitSizeValue
     ud.unitname = ud.unitname .. config.unitNamePostfix
-    ud.name = ud.name .. config.humanNamePostfix
+    applyCommonSizeConfig (ud, config)
 
     if (ud.customparams.morphto) then
         ud.customparams.morphto = ud.customparams.morphto .. config.unitNamePostfix
@@ -731,9 +734,7 @@ CreateNewUnitDefs(function (ud, newUnitDefs)
         applyUnitDefSizeConfig(largeUd, unitSizesConfig.large)
         newUnitDefs[ largeUd.unitname ] = largeUd
 
-        local mediumConfig = unitSizesConfig.medium
-        ud.customparams.unitsize = mediumConfig.unitSizeValue
-        ud.name = ud.name .. mediumConfig.humanNamePostfix
+        applyCommonSizeConfig (ud, unitSizesConfig.medium)
     end
 end)
 
@@ -752,8 +753,7 @@ local function CreateFactoriesUnitDefs (factoriesByName, mediumConfig, largeConf
 
             local largeUd = CopyTable(ud, true)
 
-            ud.customparams.unitsize = mediumConfig.unitSizeValue
-            ud.name = ud.name .. mediumConfig.humanNamePostfix
+            applyCommonSizeConfig (ud, mediumConfig)
 
             ud.buildoptions = processBuildOptions(ud.buildoptions, { "small", "medium" })
 

@@ -35,10 +35,9 @@ end
 
 local unitSizesConfig = {
     small = {
-        unitSizeValue = "small",
+        mainConfigKey = "small",
         unitNamePostfix = "_small",
         humanNamePostfix = " (Small)",
-        externalWeaponDefsConfigKey = "small",
 
         multipliers = {
             cost = 0.5,
@@ -110,16 +109,14 @@ local unitSizesConfig = {
         },
     },
     medium = {
-        unitSizeValue = "medium",
+        mainConfigKey = "medium",
         unitNamePostfix = "",
         humanNamePostfix = " (Medium)",
-        externalWeaponDefsConfigKey = "medium",
     },
     large = {
-        unitSizeValue = "large",
+        mainConfigKey = "large",
         unitNamePostfix = "_large",
         humanNamePostfix = " (Large)",
-        externalWeaponDefsConfigKey = "large",
 
         multipliers = {
             cost = 2.5,
@@ -167,16 +164,14 @@ local unitSizesConfig = {
         },
     },
     factory_medium = {
-        unitSizeValue = "factory_medium",
+        mainConfigKey = "medium",
         unitNamePostfix = "",
         humanNamePostfix = " (Medium)",
-        externalWeaponDefsConfigKey = "medium",
     },
     factory_large = {
-        unitSizeValue = "factory_large",
+        mainConfigKey = "large",
         unitNamePostfix = "_large",
         humanNamePostfix = " (Large)",
-        externalWeaponDefsConfigKey = "large",
 
         constants = {
             buildcostmetal = LARGE_FACTORY_COST,
@@ -198,16 +193,14 @@ local unitSizesConfig = {
         },
     },
     plate_medium = {
-        unitSizeValue = "plate_medium",
+        mainConfigKey = "medium",
         unitNamePostfix = "",
         humanNamePostfix = " (Medium)",
-        externalWeaponDefsConfigKey = "medium",
     },
     plate_large = {
-        unitSizeValue = "plate_large",
+        mainConfigKey = "large",
         unitNamePostfix = "_large",
         humanNamePostfix = " (Large)",
-        externalWeaponDefsConfigKey = "large",
 
         constants = {
             buildcostmetal = LARGE_PLATE_COST,
@@ -225,11 +218,10 @@ local unitSizesConfig = {
     },
 }
 
-for key, config in pairs(unitSizesConfig) do
-    config.weaponSizeValue        = config.unitSizeValue
-    config.weaponNamePostfix      = config.unitNamePostfix
-    config.explosionNamePostfix   = "_modded" .. config.unitNamePostfix  -- some existing explosions already have "_small" or "_large" postfix
-    config.explosionDefsConfigKey = config.externalWeaponDefsConfigKey
+for configKey, config in pairs(unitSizesConfig) do
+    config.configKey            = configKey
+    config.weaponNamePostfix    = config.unitNamePostfix
+    config.explosionNamePostfix = "_modded" .. config.unitNamePostfix  -- some existing explosions already have "_small" or "_large" postfix
 end
 
 SetDefaults(unitSizesConfig.factory_large.multipliers, unitSizesConfig.large.multipliers)
