@@ -12,9 +12,9 @@ local LARGE_UNIT_RANGE_MULT = 1.2
 local LARGE_PLATE_COST = 400
 local LARGE_FACTORY_COST = 1800
 
-local SMALL_TEXT_COLOR  = "\255\255\255\001"
-local MEDIUM_TEXT_COLOR = "\255\255\140\001"
-local LARGE_TEXT_COLOR  = "\255\255\025\089"
+local SMALL_TEXT_COLOR  = "\255\255\255\063" -- \255\255\255\001 brighter by 25%
+local MEDIUM_TEXT_COLOR = "\255\255\168\063" -- \255\255\140\001 brighter by 25%
+local LARGE_TEXT_COLOR  = "\255\255\082\130" -- \255\255\025\089 brighter by 25%
 local RESET_COLOR_CODE  = "\008"
 
 --------------------------------------------------------------------------------
