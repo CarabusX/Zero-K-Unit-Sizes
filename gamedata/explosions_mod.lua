@@ -8,7 +8,8 @@ local explosionDefVariants = VFS.Include("gamedata/explosions_variants.lua", nil
 VFS.Include("LuaRules/Utilities/tablefunctions.lua")
 local CopyTable = Spring.Utilities.CopyTable
 
-local lower = string.lower
+local lower       = string.lower
+local string_gsub = string.gsub
 
 --------------------------------------------------------------------------------
 
@@ -36,7 +37,7 @@ local function createMultFunction(mult)
 end
 
 local function multiplyCegValues(values, multFunc)
-    local result, numMatches = string.gsub(values, "%-?%d*%.?%d+", multFunc)
+    local result, numMatches = string_gsub(values, "%-?%d*%.?%d+", multFunc)
     --if (numMatches == 0) then
     --    Spring.Echo("No numbers matched in value:", values)
     --end
@@ -44,7 +45,7 @@ local function multiplyCegValues(values, multFunc)
 end
 
 local function multiplyCegValuesVector(vector, multFunc)
-    local result, numMatches = string.gsub(vector, "[^,]+", function(values)
+    local result, numMatches = string_gsub(vector, "[^,]+", function(values)
         return multiplyCegValues(values, multFunc)
     end)
     --if (numMatches == 0) then

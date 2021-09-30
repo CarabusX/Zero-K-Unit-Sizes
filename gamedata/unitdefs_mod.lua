@@ -9,7 +9,12 @@ local moveDefs = VFS.Include("gamedata/movedefs.lua", nil, VFS.GAME)
 VFS.Include("LuaRules/Utilities/tablefunctions.lua")
 local CopyTable = Spring.Utilities.CopyTable
 
-local lower = string.lower
+local lower         = string.lower
+local string_sub    = string.sub
+local string_rep    = string.rep
+local string_match  = string.match
+local string_gmatch = string.gmatch
+local string_gsub   = string.gsub
 
 local round = math.round or function (x)
     return math.floor(x + 0.5)
@@ -185,7 +190,7 @@ local function applyMultToVector(def, tag, mult)
     if (def[tag]) then
         local oldValues = def[tag]
         local newValues = {}
-        for value in string.gmatch(oldValues, "%S+") do
+        for value in string_gmatch(oldValues, "%S+") do
             newValues[ #newValues + 1 ] = tonumber(value) * mult
         end
         def[tag] = table.concat(newValues, " ")
@@ -196,7 +201,7 @@ local function applyMultToVectorAndRound(def, tag, mult)
     if (def[tag]) then
         local oldValues = def[tag]
         local newValues = {}
-        for value in string.gmatch(oldValues, "%S+") do
+        for value in string_gmatch(oldValues, "%S+") do
             newValues[ #newValues + 1 ] = round(tonumber(value) * mult)
         end
         def[tag] = table.concat(newValues, " ")
@@ -217,7 +222,7 @@ local function scaleUnitDefMovementClass(ud, config)
         if (config.moveClassOverrides and config.moveClassOverrides[ sourceUnitName ]) then
             convertedMoveClass = config.moveClassOverrides[ sourceUnitName ]
         else
-            local moveClassName, moveClassSize = string.match(ud.movementclass, "(%a+)(%d+)")
+            local moveClassName, moveClassSize = string_match(ud.movementclass, "(%a+)(%d+)")
             local convertedSize
 
             if (config.footprintOverrides and config.footprintOverrides[ sourceUnitName ]) then
@@ -251,7 +256,7 @@ local function scaleUnitDefYardMap (ud, multipliers, unscaledFootprintx, unscale
         if (multipliers.yardMapScale and multipliers.yardMapScale ~= 1) or
            (unscaledFootprintx ~= ud.footprintx) or
            (unscaledFootprintz ~= ud.footprintz) then
-            local yardmap = string.gsub(ud.yardmap, " ", "")
+            local yardmap = string_gsub(ud.yardmap, " ", "")
 
             local yardmapLength = #yardmap
             local lineLength = unscaledFootprintx
@@ -273,18 +278,18 @@ local function scaleUnitDefYardMap (ud, multipliers, unscaledFootprintx, unscale
                 local scaledLine = ""
 
                 for j = i, lineEnd do
-                    local char = string.sub(yardmap, j, j)
+                    local char = string_sub(yardmap, j, j)
                     local numCharRepeats = (j == lineCenter) and (yardMapScale + centerCharsToAdd) or yardMapScale
-                    local scaledChar = string.rep(char, numCharRepeats)
+                    local scaledChar = string_rep(char, numCharRepeats)
                     scaledLine = scaledLine .. scaledChar
                 end
 
                 local numLineRepeats = (i == centerIndex) and (yardMapScale + centerLinesToAdd) or yardMapScale
-                local multipliedLine = string.rep(scaledLine .. " ", numLineRepeats)
+                local multipliedLine = string_rep(scaledLine .. " ", numLineRepeats)
                 scaledYardMap = scaledYardMap .. multipliedLine
             end
 
-            ud.yardmap = string.sub(scaledYardMap, 1, -2)
+            ud.yardmap = string_sub(scaledYardMap, 1, -2)
         end
         if (multipliers.yardMapToHighResolution) then
             ud.yardmap = "h" .. ud.yardmap
