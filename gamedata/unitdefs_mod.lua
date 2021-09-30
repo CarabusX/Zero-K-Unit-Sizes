@@ -621,7 +621,7 @@ local function applyUnitDefBuildpicConfig (ud, config)
     ud.customparams.sourcebuildpic = ud.buildpic
 
     local buildPicName, buildPicExtension = getFileNameAndExtension(ud.buildpic)
-    --ud.buildpic = buildPicName .. config.buildPicPostfix .. buildPicExtension
+    ud.buildpic = buildPicName .. config.buildPicPostfix .. buildPicExtension
 end
 
 local function applyCommonSizeConfig (ud, config)

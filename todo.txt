@@ -13,7 +13,7 @@
 * Medium plate available for Medium and Large factory
 * Fix script issues for sized units. (fixed in base ZK)
 * Fix range of slow ballistic weapons for large units.
-Unit buildpics for S/M/L units
+* Unit buildpics for S/M/L units
 Fix abilities for sized units (Gadgets/Configs).
 Make large factories not ploppable.
 Multi-row Chili Integral Menu tabs
