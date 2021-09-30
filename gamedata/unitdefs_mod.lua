@@ -608,9 +608,27 @@ local function setDefaultsForMissingTags (ud)
     end
 end
 
+local function getFileNameAndExtension (fullFileName)
+    local fileName, fileExtension = string_match(fullFileName, "^(.*)(%.[^.]*)$")
+    if (fileName ~= nil) then
+        return fileName, fileExtension
+    else
+        return fullFileName, ""
+    end
+end
+
+local function applyUnitDefBuildpicConfig (ud, config)
+    ud.customparams.sourcebuildpic = ud.buildpic
+
+    local buildPicName, buildPicExtension = getFileNameAndExtension(ud.buildpic)
+    --ud.buildpic = buildPicName .. config.buildPicPostfix .. buildPicExtension
+end
+
 local function applyCommonSizeConfig (ud, config)
     ud.name = ud.name .. config.humanNamePostfix
     ud.customparams.unitsize = config.configKey
+
+    applyUnitDefBuildpicConfig(ud, config)
 end
 
 local function applyFactoryDefSizeConfig (ud, config)

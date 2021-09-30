@@ -38,6 +38,7 @@ local unitSizesConfig = {
         mainConfigKey = "small",
         unitNamePostfix = "_small",
         humanNamePostfix = " (Small)",
+        buildPicPostfix = "_small",
 
         multipliers = {
             cost = 0.5,
@@ -112,11 +113,13 @@ local unitSizesConfig = {
         mainConfigKey = "medium",
         unitNamePostfix = "",
         humanNamePostfix = " (Medium)",
+        buildPicPostfix = "_medium",
     },
     large = {
         mainConfigKey = "large",
         unitNamePostfix = "_large",
         humanNamePostfix = " (Large)",
+        buildPicPostfix = "_large",
 
         multipliers = {
             cost = 2.5,
@@ -167,11 +170,13 @@ local unitSizesConfig = {
         mainConfigKey = "medium",
         unitNamePostfix = "",
         humanNamePostfix = " (Medium)",
+        buildPicPostfix = "_medium",
     },
     factory_large = {
         mainConfigKey = "large",
         unitNamePostfix = "_large",
         humanNamePostfix = " (Large)",
+        buildPicPostfix = "_large",
 
         constants = {
             buildcostmetal = LARGE_FACTORY_COST,
@@ -196,11 +201,13 @@ local unitSizesConfig = {
         mainConfigKey = "medium",
         unitNamePostfix = "",
         humanNamePostfix = " (Medium)",
+        buildPicPostfix = "_medium",
     },
     plate_large = {
         mainConfigKey = "large",
         unitNamePostfix = "_large",
         humanNamePostfix = " (Large)",
+        buildPicPostfix = "_large",
 
         constants = {
             buildcostmetal = LARGE_PLATE_COST,
@@ -220,6 +227,7 @@ local unitSizesConfig = {
 
 for configKey, config in pairs(unitSizesConfig) do
     config.configKey            = configKey
+    config.buildPicConfigKey    = config.mainConfigKey
     config.weaponNamePostfix    = config.unitNamePostfix
     config.explosionNamePostfix = "_modded" .. config.unitNamePostfix  -- some existing explosions already have "_small" or "_large" postfix
 end
