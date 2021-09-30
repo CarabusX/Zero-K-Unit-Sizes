@@ -421,6 +421,8 @@ for i = 1, 5 do
 	}
 end
 
+local unitSizesConfig = VFS.Include("gamedata/Configs/unitsizes_config.lua", nil, VFS.GAME)
+
 local commandPanels = {
 	{
 		humanName = "Orders",
@@ -476,7 +478,7 @@ local commandPanels = {
 		buttonLayoutOverride = specialButtonLayoutOverride,
 	},
 	{
-		humanName = "Fac (M)",
+		humanName = "Fac (" .. unitSizesConfig.factory_medium:ColorizeSizeText("M") .. ")",
 		name = "factory",
 		inclusionFunction = function(cmdID)
 			local position = buildCmdFactory[cmdID]
@@ -491,7 +493,7 @@ local commandPanels = {
 		buttonLayoutConfig = buttonLayoutConfig.build,
 	},
 	{
-		humanName = "Fac (L)",
+		humanName = "Fac (" .. unitSizesConfig.factory_large:ColorizeSizeText("L") .. ")",
 		name = "factory_large",
 		inclusionFunction = function(cmdID)
 			local position = buildCmdFactory[cmdID]
@@ -506,7 +508,7 @@ local commandPanels = {
 		buttonLayoutConfig = buttonLayoutConfig.build,
 	},
 	{
-		humanName = "Units (Small)",
+		humanName = "Units (" .. unitSizesConfig.small:ColorizeSizeText("Small") .. ")",
 		name = "units_mobile_small",
 		inclusionFunction = function(cmdID, factoryUnitDefID)
 			local athenaUnitDefID = UnitDefNames["athena"].id
@@ -531,7 +533,7 @@ local commandPanels = {
 		buttonLayoutConfig = buttonLayoutConfig.build,
 	},
 	{
-		humanName = "Units (Medium)",
+		humanName = "Units (" .. unitSizesConfig.medium:ColorizeSizeText("Medium") .. ")",
 		name = "units_mobile",
 		inclusionFunction = function(cmdID, factoryUnitDefID)
 			local athenaUnitDefID = UnitDefNames["athena"].id
@@ -557,7 +559,7 @@ local commandPanels = {
 		buttonLayoutConfig = buttonLayoutConfig.build,
 	},
 	{
-		humanName = "Units (Large)",
+		humanName = "Units (" .. unitSizesConfig.large:ColorizeSizeText("Large") .. ")",
 		name = "units_mobile_large",
 		inclusionFunction = function(cmdID, factoryUnitDefID)
 			local largeAthenaUnitDefID = UnitDefNames["athena_large"].id
@@ -582,7 +584,7 @@ local commandPanels = {
 		buttonLayoutConfig = buttonLayoutConfig.build,
 	},
 	{
-		humanName = "Units (Small)",
+		humanName = "Units (" .. unitSizesConfig.small:ColorizeSizeText("Small") .. ")",
 		name = "units_factory_small",
 		inclusionFunction = function(cmdID, factoryUnitDefID)
 			local isSmall = (UnitDefs[-cmdID].customParams.unitsize == "small")
@@ -607,7 +609,7 @@ local commandPanels = {
 		buttonLayoutConfig = buttonLayoutConfig.buildunit,
 	},
 	{
-		humanName = "Units (Medium)",
+		humanName = "Units (" .. unitSizesConfig.medium:ColorizeSizeText("Medium") .. ")",
 		name = "units_factory",
 		inclusionFunction = function(cmdID, factoryUnitDefID)
 			local isMedium = (UnitDefs[-cmdID].customParams.unitsize == "medium")
@@ -632,7 +634,7 @@ local commandPanels = {
 		buttonLayoutConfig = buttonLayoutConfig.buildunit,
 	},
 	{
-		humanName = "Units (Large)",
+		humanName = "Units (" .. unitSizesConfig.large:ColorizeSizeText("Large") .. ")",
 		name = "units_factory_large",
 		inclusionFunction = function(cmdID, factoryUnitDefID)
 			local isLarge = (UnitDefs[-cmdID].customParams.unitsize == "large")

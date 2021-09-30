@@ -237,8 +237,8 @@ local unitSizesConfig = {
     },
 }
 
-local function ColorizeSizeText (text, colorCode)
-    return colorCode .. text .. RESET_COLOR_CODE
+local function ColorizeSizeText (config, text)
+    return config.textColor .. text .. RESET_COLOR_CODE
 end
 
 for configKey, config in pairs(unitSizesConfig) do
@@ -246,7 +246,9 @@ for configKey, config in pairs(unitSizesConfig) do
     config.buildPicConfigKey    = config.mainConfigKey
     config.weaponNamePostfix    = config.unitNamePostfix
     config.explosionNamePostfix = "_modded" .. config.unitNamePostfix  -- some existing explosions already have "_small" or "_large" postfix
-    config.humanNamePostfix     = " (" .. ColorizeSizeText(config.humanNamePostfix, config.textColor) .. ")"
+
+    config.ColorizeSizeText     = ColorizeSizeText
+    config.humanNamePostfix     = " (" .. config:ColorizeSizeText(config.humanNamePostfix) .. ")"
 end
 
 SetDefaults(unitSizesConfig.factory_large.multipliers, unitSizesConfig.large.multipliers)
