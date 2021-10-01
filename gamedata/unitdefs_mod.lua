@@ -362,6 +362,11 @@ local function applyUnitDefSizeMult (ud, multipliers, config)
     --applyMult(ud.customparams, "selection_scale", sizeMult)
     --applyMult(ud.customparams, "selectionscalemult", sizeMult)
 
+    -- unit sounds volumes
+    applyMult(ud, "soundok_vol", multipliers.unitSoundVolume)
+    applyMult(ud, "soundselect_vol", multipliers.unitSoundVolume)
+    applyMult(ud, "soundbuild_vol", multipliers.unitSoundVolume) -- not used in ZK
+
     applyUnitDefFeatureMults(ud, sizeMult, config)
 end
 
@@ -520,6 +525,9 @@ local function applyWeaponDefMults (wd, multipliers, config)
 
     applyMult(wd, "metalpershot", multipliers.weaponCostMult)
     applyMult(wd, "energypershot", multipliers.weaponCostMult)
+
+    applyMult(wd, "soundstartvolume", multipliers.weaponSoundVolume)
+    applyMult(wd, "soundhitvolume", multipliers.weaponSoundVolume)
 
     if (wd.customparams.spawns_name) then
         wd.customparams.spawns_name = wd.customparams.spawns_name .. config.unitNamePostfix

@@ -14,11 +14,11 @@
 * Fix script issues for sized units. (fixed in base ZK)
 * Fix range of slow ballistic weapons for large units.
 * Unit buildpics for S/M/L units
+* Scaled sounds of units and weapons
 Fix abilities for sized units (Gadgets/Configs).
 Make large factories not ploppable.
 Multi-row Chili Integral Menu tabs
 Make Integral Menu remember selected tab per factory/plate type.
-Scaled sounds of units and weapons
 Implement s3o model parsing and scaling tool.
 Fix sized factories display for building placement.
 Add sized models of projectiles instead of using DrawProjectile.

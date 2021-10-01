@@ -17,6 +17,8 @@ local MEDIUM_TEXT_COLOR = "\255\255\168\063" -- \255\255\140\001 brighter by 25%
 local LARGE_TEXT_COLOR  = "\255\255\082\130" -- \255\255\025\089 brighter by 25%
 local RESET_COLOR_CODE  = "\008"
 
+local sqrt = math.sqrt
+
 --------------------------------------------------------------------------------
 
 local function ArrayToSet (array)
@@ -61,11 +63,13 @@ local unitSizesConfig = {
             sensorRange = SMALL_UNIT_RANGE_MULT,
             specialAbilityPower = SMALL_UNIT_POWER_MULT,
             specialAbilityRange = SMALL_UNIT_RANGE_MULT,
+            unitSoundVolume = 0.85,
             damage = SMALL_UNIT_POWER_MULT,
             aoe = SMALL_UNIT_SIZE_MULT,
             range = SMALL_UNIT_RANGE_MULT,
             weaponCostMult = SMALL_UNIT_POWER_MULT,
             projectileSize = SMALL_UNIT_SIZE_MULT,
+            weaponSoundVolume = sqrt(SMALL_UNIT_POWER_MULT), -- default volumes calculated in armordefs.lua are proportional to sqrt(damage)
         },
 
         footprintConversions = {
@@ -144,11 +148,13 @@ local unitSizesConfig = {
             sensorRange = LARGE_UNIT_RANGE_MULT,
             specialAbilityPower = LARGE_UNIT_POWER_MULT,
             specialAbilityRange = LARGE_UNIT_RANGE_MULT,
+            unitSoundVolume = 1.25,
             damage = LARGE_UNIT_POWER_MULT,
             aoe = LARGE_UNIT_SIZE_MULT,
             range = LARGE_UNIT_RANGE_MULT,
             weaponCostMult = LARGE_UNIT_POWER_MULT,
             projectileSize = LARGE_UNIT_SIZE_MULT,
+            weaponSoundVolume = sqrt(LARGE_UNIT_POWER_MULT), -- default volumes calculated in armordefs.lua are proportional to sqrt(damage)
 
             yardMapScale = 1, -- Let the yardMap scaling code automatically add missing chars to fill footprint size.
             yardMapToHighResolution = false,

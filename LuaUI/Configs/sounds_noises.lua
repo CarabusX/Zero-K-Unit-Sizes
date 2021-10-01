@@ -1845,6 +1845,29 @@ local sounds = {
 	
 }
 
+-- modified in mod -- BEGIN
+local unitSizesConfig = VFS.Include("gamedata/Configs/unitsizes_config.lua", nil, VFS.GAME)
+local CopyTable = Spring.Utilities.CopyTable
+
+for _, ud in pairs(UnitDefs) do
+	local sourceUnitName = ud.customParams.sourceunit
+
+	if (not sounds[ud.name]) and (sourceUnitName and sounds[sourceUnitName]) then
+		local config = unitSizesConfig[ ud.customParams.unitsize ]
+		local volumeMult = config.multipliers.unitSoundVolume
+
+		local sourceSoundDef = sounds[sourceUnitName]
+		local soundDef = CopyTable(sourceSoundDef, true)
+
+		for soundName, sound in pairs(soundDef) do
+			sound.volume = (sound.volume or 1) * volumeMult
+		end
+
+		sounds[ud.name] = soundDef
+	end
+end
+-- modified in mod -- END
+
 local function applyCustomParamSound(soundDef, soundName, customParams)
 	local sound = customParams["sound" .. soundName]
 	if not sound then
