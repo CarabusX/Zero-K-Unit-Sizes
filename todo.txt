@@ -4,6 +4,7 @@
 * Fix factory morph tooltip.
 * Sized drones
 * Sized mines
+* Sized teleporter beacons
 * Sized movedefs
 * Sized wrecks and debris
 * Sized projectile models

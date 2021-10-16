@@ -113,6 +113,7 @@ local unitSizesConfig = {
             -- [[staticjammer]].
             [[amphlaunch]],
             [[amphtele]],
+            [[tele_beacon]],
         }),
 
         limits = {

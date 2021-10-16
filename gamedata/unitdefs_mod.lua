@@ -75,6 +75,9 @@ local otherUnits = {
     -- mines
     -- [[wolverine_mine]], -- discovered automatically
 
+    -- teleporter beacon
+    -- [[tele_beacon]], -- discovered automatically
+
     -- morphable units
     -- [[staticjammer]], -- discovered automatically
     -- [[staticshield]],
@@ -130,10 +133,17 @@ for unitName, _ in pairs (factoriesUnitsByName) do
     end
 
     -- include units spawned by grey goo
-    local greyGooUnitName = ud.customparams and ud.customparams.grey_goo_spawn
+    local greyGooUnitName = ud.customparams and ud.customparams.grey_goo and ud.customparams.grey_goo_spawn
 
     if (greyGooUnitName and not factoriesUnitsByName[greyGooUnitName]) then
         otherUnitsByName[greyGooUnitName] = true
+    end
+
+    -- include teleporter beacons
+    local beaconUnitName = ud.customparams and ud.customparams.teleporter and ud.customparams.teleporter_beacon_unit
+
+    if (beaconUnitName and not factoriesUnitsByName[beaconUnitName]) then
+        otherUnitsByName[beaconUnitName] = true
     end
 
     -- include mines
@@ -665,8 +675,12 @@ local function applyUnitDefSizeConfig (ud, config)
         ud.customparams.morphto = ud.customparams.morphto .. config.unitNamePostfix
     end
 
-    if (ud.customparams.grey_goo_spawn) then
+    if (ud.customparams.grey_goo and ud.customparams.grey_goo_spawn) then
         ud.customparams.grey_goo_spawn = ud.customparams.grey_goo_spawn .. config.unitNamePostfix
+    end
+
+    if (ud.customparams.teleporter and ud.customparams.teleporter_beacon_unit) then
+        ud.customparams.teleporter_beacon_unit = ud.customparams.teleporter_beacon_unit .. config.unitNamePostfix
     end
 
     applyUnitDefMultipliers(ud, config.multipliers, config)
