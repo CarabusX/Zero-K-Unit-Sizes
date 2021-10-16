@@ -626,9 +626,10 @@ local function getFileNameAndExtension (fullFileName)
 end
 
 local function applyUnitDefBuildpicConfig (ud, config)
-    ud.customparams.sourcebuildpic = ud.buildpic
+    local sourceBuildPic = ud.buildpic or (ud.customparams.sourceunit .. ".png")
+    ud.customparams.sourcebuildpic = sourceBuildPic
 
-    local buildPicName, buildPicExtension = getFileNameAndExtension(ud.buildpic)
+    local buildPicName, buildPicExtension = getFileNameAndExtension(sourceBuildPic)
     ud.buildpic = buildPicName .. config.buildPicPostfix .. buildPicExtension
 end
 
